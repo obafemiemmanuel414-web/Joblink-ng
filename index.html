@@ -397,12 +397,11 @@ Cancel
 
 document.body.appendChild(applicationBox);
 
-
 /* SUBMIT */
 
 document.getElementById(
 "submitApplication"
-).onclick=function(){
+).onclick=async function(){
 
 const cv=
 document.getElementById("cvFile").files[0];
@@ -415,31 +414,38 @@ return;
 
 }
 
+const { error } = await supabase
+.from("applications")
+.insert([{
 
-/* CURRENTLY SHOWS CONFIRMATION */
+name: name,
+email: email,
+phone: phone,
+location: location,
+job_title: title,
+cv_name: cv.name
+
+}]);
+
+if(error){
+
+console.error(error);
 
 alert(
+"Application could not be submitted. Please try again."
+);
 
-"Application submitted!\n\n" +
+return;
 
-"Job: " + title +
+}
 
-"\nName: " + name +
-
-"\nEmail: " + email +
-
-"\nPhone: " + phone +
-
-"\nLocation: " + location +
-
-"\nCV: " + cv.name
-
+alert(
+"Application submitted successfully!"
 );
 
 applicationBox.remove();
 
 };
-
 
 /* CANCEL */
 
