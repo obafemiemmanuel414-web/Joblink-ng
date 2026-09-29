@@ -189,6 +189,7 @@ displayJobs(results);
 }
 
 function apply(title){
+
 const name = prompt("Enter your full name:");
 if(!name) return;
 
@@ -201,38 +202,74 @@ if(!phone) return;
 const location = prompt("Enter your location:");
 if(!location) return;
 
-// Create CV upload
-const cvInput = document.createElement("input");
-cvInput.type = "file";
-cvInput.accept = ".pdf,.doc,.docx";
-cvInput.style.display = "none";
+// Create application box
+const applicationBox = document.createElement("div");
 
-document.body.appendChild(cvInput);
+applicationBox.style.position = "fixed";
+applicationBox.style.top = "50%";
+applicationBox.style.left = "50%";
+applicationBox.style.transform = "translate(-50%, -50%)";
+applicationBox.style.background = "white";
+applicationBox.style.padding = "25px";
+applicationBox.style.borderRadius = "12px";
+applicationBox.style.boxShadow = "0 5px 25px #00000040";
+applicationBox.style.zIndex = "9999";
+applicationBox.style.width = "90%";
+applicationBox.style.maxWidth = "400px";
 
-// Open CV selector
-cvInput.click();
+applicationBox.innerHTML = `
+<h2 style="margin-bottom:10px;">Upload Your CV</h2>
 
-// Wait for CV selection
-cvInput.onchange = function(){
+<p style="margin-bottom:15px;">
+Applying for: <strong>${title}</strong>
+</p>
 
-    const cv = cvInput.files[0];
+<input
+    id="cvFile"
+    type="file"
+    accept=".pdf,.doc,.docx"
+    style="width:100%;margin-bottom:15px;"
+>
 
-    if(!cv){
-        alert("Please select your CV.");
-        return;
-    }
+<button id="submitApplication" style="width:100%;">
+Submit Application
+</button>
 
-    alert(
-    "Application ready!\n\n" +
-    "Job: " + title +
-    "\nName: " + name +
-    "\nEmail: " + email +
-    "\nPhone: " + phone +
-    "\nLocation: " + location +
-    "\nCV: " + cv.name +
-    "\n\nYour application details have been collected."
+<button id="cancelApplication"
+style="width:100%;margin-top:10px;background:#777;">
+Cancel
+</button>
+`;
+
+document.body.appendChild(applicationBox);
+
+document.getElementById("submitApplication").onclick = function(){
+
+const cv = document.getElementById("cvFile").files[0];
+
+if(!cv){
+alert("Please select your CV first.");
+return;
+}
+
+alert(
+"Application submitted!\n\n" +
+"Job: " + title +
+"\nName: " + name +
+"\nEmail: " + email +
+"\nPhone: " + phone +
+"\nLocation: " + location +
+"\nCV: " + cv.name
 );
+
+applicationBox.remove();
 };
+
+document.getElementById("cancelApplication").onclick = function(){
+applicationBox.remove();
+};
+
+}
 }
 
 displayJobs();
