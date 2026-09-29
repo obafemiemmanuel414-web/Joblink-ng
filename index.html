@@ -202,6 +202,7 @@ const location = prompt("Enter your location:");
 if(!location) return;
 
 
+const cvInput = document.createElement("input");
 cvInput.type = "file";
 cvInput.accept = ".pdf,.doc,.docx";
 cvInput.style.display = "none";
@@ -217,6 +218,8 @@ cvInput.onchange = function(){
         return;
     }
 
+    // continue with the rest of your application code here
+};
     alert(
         "Application ready!\n\n" +
         "Job: " + title +
