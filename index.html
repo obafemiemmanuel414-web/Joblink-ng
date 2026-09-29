@@ -271,11 +271,17 @@ document.getElementById("cancelApplication").onclick = function(){
 
 }
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+document.getElementById("cancelApplication").onclick = function(){
+    applicationBox.remove();
+};
 
-<script>
+}
 
-const SUPABASE_URL = "https://eqxdoonyghqpykemhqde.supabase.co";
+displayJobs();
+
+</script>
+
+
 const SUPABASE_ANON_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
 
 const supabase = window.supabase.createClient(
