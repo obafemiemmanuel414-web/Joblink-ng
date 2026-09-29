@@ -202,6 +202,32 @@ const location = prompt("Enter your location:");
 if(!location) return;
 
 const message = prompt("Write a short message to the employer:");
+  const cvInput = document.createElement("input");
+cvInput.type = "file";
+cvInput.accept = ".pdf,.doc,.docx";
+cvInput.style.display = "none";
+
+document.body.appendChild(cvInput);
+cvInput.click();
+
+cvInput.onchange = function(){
+    const cv = cvInput.files[0];
+
+    if(!cv){
+        alert("Please select your CV.");
+        return;
+    }
+
+    alert(
+        "Application ready!\n\n" +
+        "Job: " + title +
+        "\nName: " + name +
+        "\nCV: " + cv.name +
+        "\n\nYour CV has been selected."
+    );
+
+    document.body.removeChild(cvInput);
+};
 
 alert(
 "Application started successfully!\n\n" +
