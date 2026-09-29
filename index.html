@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JobLink NG - Find Jobs in Nigeria</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f5f7fa;color:#172033}
+header{background:#075e54;color:white;padding:18px 5%;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:24px;font-weight:bold}
+nav a{color:white;text-decoration:none;margin-left:18px}
+.hero{background:#0b7a6e;color:white;text-align:center;padding:55px 20px}
+.hero h1{font-size:38px;margin-bottom:12px}
+.hero p{font-size:18px;margin-bottom:25px}
+.search{max-width:850px;margin:auto;background:white;padding:12px;border-radius:10px;display:flex;gap:10px}
+.search input{flex:1;padding:14px;border:1px solid #ddd;border-radius:7px;font-size:16px}
+button{border:0;border-radius:7px;padding:13px 20px;background:#075e54;color:white;font-weight:bold;cursor:pointer}
+.container{max-width:1100px;margin:30px auto;padding:0 20px}
+.filters{background:white;padding:20px;border-radius:10px;margin-bottom:25px}
+.filters select{padding:11px;margin:5px;border:1px solid #ddd;border-radius:6px}
+.jobs{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.job{background:white;padding:22px;border-radius:10px;box-shadow:0 2px 8px #00000012}
+.job h3{margin-bottom:10px;color:#075e54}
+.job p{margin:7px 0;color:#555}
+.tag{display:inline-block;background:#e5f5f2;color:#075e54;padding:5px 9px;border-radius:15px;font-size:13px;margin:8px 0}
+.apply{margin-top:12px;width:100%}
+section.info{background:white;padding:30px;margin-top:30px;border-radius:10px}
+footer{margin-top:40px;background:#172033;color:white;text-align:center;padding:25px}
+@media(max-width:600px){
+.hero h1{font-size:30px}
+.search{flex-direction:column}
+nav{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">JobLink NG</div>
+<nav>
+<a href="#jobs">Jobs</a>
+<a href="#post">Post a Job</a>
+<a href="#safety">Safety</a>
+</nav>
+</header>
+
+<section class="hero">
+<h1>Find Your Next Job</h1>
+<p>Connect with employers and discover job opportunities across Nigeria.</p>
+
+<div class="search">
+<input id="keyword" placeholder="Job title, skill or keyword">
+<input id="location" placeholder="Location e.g. Lagos">
+<button onclick="searchJobs()">Search Jobs</button>
+</div>
+</section>
+
+<div class="container">
+
+<div class="filters">
+<strong>Filter jobs:</strong>
+<select id="type" onchange="searchJobs()">
+<option value="">All job types</option>
+<option>Full-time</option>
+<option>Part-time</option>
+<option>Remote</option>
+<option>Contract</option>
+</select>
+
+<select id="salary" onchange="searchJobs()">
+<option value="">Any salary</option>
+<option value="100000">₦100,000+</option>
+<option value="200000">₦200,000+</option>
+<option value="300000">₦300,000+</option>
+</select>
+</div>
+
+<h2 id="jobs">Available Jobs</h2>
+<br>
+
+<div class="jobs" id="jobList"></div>
+
+<section class="info" id="post">
+<h2>Post a Job</h2>
+<br>
+<p>Employers can use JobLink NG to advertise opportunities and connect with job seekers.</p>
+<br>
+<button onclick="alert('Job posting feature coming soon!')">Post a Job</button>
+</section>
+
+<section class="info" id="safety">
+<h2>Stay Safe From Job Scams</h2>
+<br>
+<p>Never send money to get a job. Be careful with requests for passwords, PINs, bank details or unnecessary personal information.</p>
+</section>
+
+</div>
+
+<footer>
+<p>© 2026 JobLink NG — Connecting Nigerians with opportunities.</p>
+</footer>
+
+<script>
+const jobs=[
+{
+title:"Security Officer",
+company:"Private Company",
+location:"Lagos",
+type:"Full-time",
+salary:120000
+},
+{
+title:"Customer Service Representative",
+company:"Lagos Business",
+location:"Lagos",
+type:"Full-time",
+salary:180000
+},
+{
+title:"Social Media Assistant",
+company:"Digital Agency",
+location:"Remote",
+type:"Remote",
+salary:150000
+},
+{
+title:"Sales Representative",
+company:"Retail Company",
+location:"Lekki, Lagos",
+type:"Part-time",
+salary:100000
+},
+{
+title:"Graphic Designer",
+company:"Creative Studio",
+location:"Remote",
+type:"Contract",
+salary:200000
+},
+{
+title:"Office Assistant",
+company:"Business Services",
+location:"Victoria Island, Lagos",
+type:"Full-time",
+salary:140000
+}
+];
+
+function displayJobs(list=jobs){
+const box=document.getElementById("jobList");
+
+if(list.length===0){
+box.innerHTML="<p>No jobs found. Try another search.</p>";
+return;
+}
+
+box.innerHTML=list.map(job=>`
+<div class="job">
+<h3>${job.title}</h3>
+<p><strong>Company:</strong> ${job.company}</p>
+<p>📍 ${job.location}</p>
+<p>💰 ₦${job.salary.toLocaleString()} / month</p>
+<span class="tag">${job.type}</span>
+<button class="apply" onclick="apply('${job.title}')">View / Apply</button>
+</div>
+`).join("");
+}
+
+function searchJobs(){
+const keyword=document.getElementById("keyword").value.toLowerCase();
+const location=document.getElementById("location").value.toLowerCase();
+const type=document.getElementById("type").value;
+const salary=document.getElementById("salary").value;
+
+const results=jobs.filter(job=>{
+return (
+(job.title.toLowerCase().includes(keyword) ||
+job.company.toLowerCase().includes(keyword)) &&
+job.location.toLowerCase().includes(location) &&
+(!type || job.type===type) &&
+(!salary || job.salary>=Number(salary))
+);
+});
+
+displayJobs(results);
+}
+
+function apply(title){
+alert("You selected: "+title+
+"\n\nApplication system will be connected in a future version.");
+}
+
+displayJobs();
+</script>
+
+</body>
+  </html>
