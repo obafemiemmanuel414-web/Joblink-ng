@@ -201,16 +201,20 @@ if(!phone) return;
 const location = prompt("Enter your location:");
 if(!location) return;
 
-
+// Create CV upload
 const cvInput = document.createElement("input");
 cvInput.type = "file";
 cvInput.accept = ".pdf,.doc,.docx";
 cvInput.style.display = "none";
 
 document.body.appendChild(cvInput);
+
+// Open CV selector
 cvInput.click();
 
+// Wait for CV selection
 cvInput.onchange = function(){
+
     const cv = cvInput.files[0];
 
     if(!cv){
@@ -218,28 +222,17 @@ cvInput.onchange = function(){
         return;
     }
 
-    // continue with the rest of your application code here
-};
     alert(
         "Application ready!\n\n" +
         "Job: " + title +
         "\nName: " + name +
+        "\nEmail: " + email +
+        "\nPhone: " + phone +
+        "\nLocation: " + location +
         "\nCV: " + cv.name +
-        "\n\nYour CV has been selected."
+        "\n\nYour application details have been collected."
     );
-
-
-
-alert(
-"Application started successfully!\n\n" +
-"Job: " + title +
-"\nName: " + name +
-"\nEmail: " + email +
-"\nPhone: " + phone +
-"\nLocation: " + location +
-"\n\nYour application details have been collected."
-);
-}
+};
 displayJobs();
 </script>
 
