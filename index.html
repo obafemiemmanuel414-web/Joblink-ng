@@ -388,16 +388,17 @@ Never send money to get a job. Be careful with requests for passwords, PINs, ban
    SUPABASE CONNECTION
 ===================================================== */
 
-const SUPABASE_URL =
-"https://eqxdoonyghqpykemhqde.supabase.co";
+const SUPABASE_URL = "https://eqxdoonyghqpykemhqde.supabase.co";
 
 const SUPABASE_ANON_KEY =
 "sb_publishable_cgYERMnBcyshrtTcHpscvw_tgxBUc07";
 
-let supabaseClient = null;
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
 
-try{
-
+console.log("Supabase client created:", !!supabaseClient);
     if(
         window.supabase &&
         typeof window.supabase.createClient === "function"
