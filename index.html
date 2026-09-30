@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>JobLink NG - Find Jobs in Nigeria</title>
+<title>JobLink NG</title>
 
 <style>
 
@@ -42,32 +37,28 @@ header{
 nav a{
     color:white;
     text-decoration:none;
-    margin-left:18px;
+    margin-left:15px;
 }
 
 .hero{
     background:#0b7a6e;
     color:white;
     text-align:center;
-    padding:55px 20px;
+    padding:45px 20px;
 }
 
 .hero h1{
-    font-size:38px;
-    margin-bottom:12px;
+    font-size:36px;
+    margin-bottom:10px;
 }
 
 .hero p{
-    font-size:18px;
-    margin-bottom:25px;
+    margin-bottom:20px;
 }
 
 .search{
     max-width:850px;
     margin:auto;
-    background:white;
-    padding:12px;
-    border-radius:10px;
     display:flex;
     gap:10px;
 }
@@ -75,28 +66,18 @@ nav a{
 .search input{
     flex:1;
     padding:14px;
-    border:1px solid #ddd;
+    border:0;
     border-radius:7px;
-    font-size:16px;
 }
 
 button{
-    border:0;
-    border-radius:7px;
-    padding:13px 20px;
     background:#075e54;
     color:white;
+    border:0;
+    padding:13px 20px;
+    border-radius:7px;
     font-weight:bold;
     cursor:pointer;
-}
-
-button:hover{
-    opacity:.9;
-}
-
-button:disabled{
-    opacity:.6;
-    cursor:not-allowed;
 }
 
 .container{
@@ -113,7 +94,7 @@ button:disabled{
 }
 
 .filters select{
-    padding:11px;
+    padding:10px;
     margin:5px;
     border:1px solid #ddd;
     border-radius:6px;
@@ -122,110 +103,95 @@ button:disabled{
 .jobs{
     display:grid;
     grid-template-columns:
-        repeat(auto-fit,minmax(280px,1fr));
+    repeat(auto-fit,minmax(280px,1fr));
     gap:18px;
 }
 
 .job{
     background:white;
-    padding:22px;
+    padding:20px;
     border-radius:10px;
-    box-shadow:0 2px 8px #00000012;
+    box-shadow:0 2px 8px #0001;
 }
 
 .job h3{
-    margin-bottom:10px;
     color:#075e54;
+    margin-bottom:10px;
 }
 
 .job p{
-    margin:7px 0;
-    color:#555;
+    margin:8px 0;
 }
 
 .tag{
     display:inline-block;
     background:#e5f5f2;
     color:#075e54;
-    padding:5px 9px;
+    padding:5px 10px;
     border-radius:15px;
     font-size:13px;
-    margin:8px 0;
+    margin:5px 0;
 }
 
 .apply{
-    margin-top:12px;
     width:100%;
+    margin-top:10px;
 }
 
 .info{
     background:white;
-    padding:30px;
-    margin-top:30px;
-    border-radius:10px;
-}
-
-footer{
-    margin-top:40px;
-    background:#172033;
-    color:white;
-    text-align:center;
     padding:25px;
+    border-radius:10px;
+    margin-top:30px;
 }
 
 .loading{
-    text-align:center;
+    background:white;
     padding:30px;
+    text-align:center;
     grid-column:1/-1;
 }
 
 .no-jobs{
     background:white;
-    padding:25px;
-    border-radius:10px;
+    padding:30px;
     text-align:center;
     grid-column:1/-1;
 }
 
 .modal{
     position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:#00000080;
+    inset:0;
+    background:#0008;
     display:flex;
     justify-content:center;
     align-items:center;
-    z-index:9999;
-    overflow:auto;
     padding:20px;
+    z-index:9999;
 }
 
 .modal-box{
     background:white;
+    width:100%;
+    max-width:450px;
     padding:25px;
     border-radius:12px;
-    width:90%;
-    max-width:450px;
     max-height:90vh;
     overflow:auto;
 }
 
 .modal-box input,
-.modal-box textarea,
-.modal-box select{
+.modal-box select,
+.modal-box textarea{
     width:100%;
     padding:12px;
     margin:8px 0 15px;
     border:1px solid #ddd;
     border-radius:7px;
-    font-family:Arial,sans-serif;
 }
 
 .modal-box textarea{
-    min-height:110px;
-    resize:vertical;
+    height:120px;
 }
 
 .modal-box button{
@@ -233,27 +199,27 @@ footer{
 }
 
 .cancel{
-    background:#777 !important;
+    background:#777;
     margin-top:10px;
-}
-
-.status{
-    font-size:14px;
-    margin:5px 0 12px;
-    color:#075e54;
-    font-weight:bold;
 }
 
 .success{
     text-align:center;
 }
 
-.description{
-    line-height:1.5;
-    margin-top:10px;
+footer{
+    margin-top:40px;
+    padding:25px;
+    text-align:center;
+    background:#172033;
+    color:white;
 }
 
 @media(max-width:600px){
+
+    nav{
+        display:none;
+    }
 
     .hero h1{
         font-size:30px;
@@ -263,230 +229,201 @@ footer{
         flex-direction:column;
     }
 
-    nav{
-        display:none;
-    }
-
-    .filters select{
-        width:100%;
-        margin:5px 0;
-    }
-
 }
 
 </style>
-
 </head>
 
 <body>
 
 <header>
 
-    <div class="logo">
-        JobLink NG
-    </div>
+<div class="logo">
+JobLink NG
+</div>
 
-    <nav>
-
-        <a href="#jobs">
-            Jobs
-        </a>
-
-        <a href="#post">
-            Post a Job
-        </a>
-
-        <a href="#safety">
-            Safety
-        </a>
-
-    </nav>
+<nav>
+<a href="#jobs">Jobs</a>
+<a href="#post">Post a Job</a>
+<a href="#safety">Safety</a>
+</nav>
 
 </header>
 
 
 <section class="hero">
 
-    <h1>
-        Find Your Next Job
-    </h1>
+<h1>
+Find Your Next Job
+</h1>
 
-    <p>
-        Connect with employers and discover
-        job opportunities across Nigeria.
-    </p>
+<p>
+Find jobs and connect with employers across Nigeria.
+</p>
 
-    <div class="search">
+<div class="search">
 
-        <input
-            id="keyword"
-            type="text"
-            placeholder="Job title, skill or keyword"
-        >
+<input
+id="keyword"
+type="text"
+placeholder="Job title or keyword"
+>
 
-        <input
-            id="location"
-            type="text"
-            placeholder="Location e.g. Lagos"
-        >
+<input
+id="location"
+type="text"
+placeholder="Location"
+>
 
-        <button onclick="searchJobs()">
-            Search Jobs
-        </button>
+<button onclick="searchJobs()">
+Search
+</button>
 
-    </div>
+</div>
 
 </section>
 
 
 <div class="container">
 
-    <div class="filters">
+<div class="filters">
 
-        <strong>
-            Filter jobs:
-        </strong>
+<strong>
+Filter:
+</strong>
 
-        <select
-            id="type"
-            onchange="searchJobs()"
-        >
+<select
+id="type"
+onchange="searchJobs()"
+>
 
-            <option value="">
-                All job types
-            </option>
+<option value="">
+All Types
+</option>
 
-            <option value="Full-time">
-                Full-time
-            </option>
+<option value="Full-time">
+Full-time
+</option>
 
-            <option value="Part-time">
-                Part-time
-            </option>
+<option value="Part-time">
+Part-time
+</option>
 
-            <option value="Remote">
-                Remote
-            </option>
+<option value="Remote">
+Remote
+</option>
 
-            <option value="Contract">
-                Contract
-            </option>
+<option value="Contract">
+Contract
+</option>
 
-        </select>
-
-
-        <select
-            id="salary"
-            onchange="searchJobs()"
-        >
-
-            <option value="">
-                Any salary
-            </option>
-
-            <option value="100000">
-                ₦100,000+
-            </option>
-
-            <option value="200000">
-                ₦200,000+
-            </option>
-
-            <option value="300000">
-                ₦300,000+
-            </option>
-
-        </select>
-
-    </div>
+</select>
 
 
-    <h2 id="jobs">
-        Available Jobs
-    </h2>
+<select
+id="salary"
+onchange="searchJobs()"
+>
 
-    <br>
+<option value="">
+Any Salary
+</option>
 
+<option value="100000">
+₦100,000+
+</option>
 
-    <div
-        class="jobs"
-        id="jobList"
-    >
+<option value="200000">
+₦200,000+
+</option>
 
-        <div class="loading">
-            Loading jobs...
-        </div>
+<option value="300000">
+₦300,000+
+</option>
 
-    </div>
+</select>
 
-
-    <section
-        class="info"
-        id="post"
-    >
-
-        <h2>
-            Post a Job
-        </h2>
-
-        <br>
-
-        <p>
-            Employers can use JobLink NG to
-            advertise opportunities and connect
-            with job seekers.
-        </p>
-
-        <br>
-
-        <button onclick="postJob()">
-            Post a Job
-        </button>
-
-    </section>
+</div>
 
 
-    <section
-        class="info"
-        id="safety"
-    >
+<h2 id="jobs">
+Available Jobs
+</h2>
 
-        <h2>
-            Stay Safe From Job Scams
-        </h2>
+<br>
 
-        <br>
 
-        <p>
-            Never send money to get a job.
-            Be careful with requests for passwords,
-            PINs, bank details or unnecessary
-            personal information.
-        </p>
+<div
+id="jobList"
+class="jobs"
+>
 
-    </section>
+<div class="loading">
+Loading jobs...
+</div>
+
+</div>
+
+
+<section
+id="post"
+class="info"
+>
+
+<h2>
+Post a Job
+</h2>
+
+<br>
+
+<p>
+Employers can post available job opportunities
+on JobLink NG.
+</p>
+
+<br>
+
+<button onclick="postJob()">
+Post a Job
+</button>
+
+</section>
+
+
+<section
+id="safety"
+class="info"
+>
+
+<h2>
+Safety
+</h2>
+
+<br>
+
+<p>
+Never pay money to get a job. Be careful with
+requests for passwords, PINs or unnecessary
+bank information.
+</p>
+
+</section>
 
 </div>
 
 
 <footer>
 
-    <p>
-        © 2026 JobLink NG —
-        Connecting Nigerians with opportunities.
-    </p>
+© 2026 JobLink NG
 
 </footer>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
 <script>
 
-/* =====================================================
-   SUPABASE CONNECTION
-===================================================== */
+/* SUPABASE */
 
 const SUPABASE_URL =
 "https://eqxdoonyghqpykemhqde.supabase.co";
@@ -494,88 +431,21 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
 "sb_publishable_cgYERMnBcyshrtTcHpscvw_tgxBUc07";
 
-const supabaseClient =
+const db =
 window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
 );
 
 
-/* =====================================================
-   JOB DATA
-===================================================== */
+/* JOBS */
 
 let allJobs = [];
 
 
-/* =====================================================
-   BACKUP JOBS
-===================================================== */
+/* ESCAPE TEXT */
 
-const backupJobs = [
-
-    {
-        title:"Security Officer",
-        company:"Private Company",
-        location:"Lagos",
-        type:"Full-time",
-        salary:120000,
-        description:"Security officer position."
-    },
-
-    {
-        title:"Customer Service Representative",
-        company:"Lagos Business",
-        location:"Lagos",
-        type:"Full-time",
-        salary:180000,
-        description:"Customer service position."
-    },
-
-    {
-        title:"Social Media Assistant",
-        company:"Digital Agency",
-        location:"Remote",
-        type:"Remote",
-        salary:150000,
-        description:"Social media assistant position."
-    },
-
-    {
-        title:"Sales Representative",
-        company:"Retail Company",
-        location:"Lekki, Lagos",
-        type:"Part-time",
-        salary:100000,
-        description:"Sales representative position."
-    },
-
-    {
-        title:"Graphic Designer",
-        company:"Creative Studio",
-        location:"Remote",
-        type:"Contract",
-        salary:200000,
-        description:"Graphic design position."
-    },
-
-    {
-        title:"Office Assistant",
-        company:"Business Services",
-        location:"Victoria Island, Lagos",
-        type:"Full-time",
-        salary:140000,
-        description:"Office assistant position."
-    }
-
-];
-
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHTML(value){
+function safe(value){
 
     return String(value || "")
         .replace(/&/g,"&amp;")
@@ -587,132 +457,73 @@ function escapeHTML(value){
 }
 
 
-/* =====================================================
-   DISPLAY JOBS
-===================================================== */
+/* DISPLAY JOBS */
 
-function displayJobs(list){
+function displayJobs(jobs){
 
     const box =
         document.getElementById("jobList");
 
-    if(!box){
-        return;
-    }
-
-    if(!list || list.length === 0){
+    if(!jobs || jobs.length === 0){
 
         box.innerHTML = `
-
             <div class="no-jobs">
-
-                <h3>
-                    No jobs found
-                </h3>
-
+                <h3>No jobs found</h3>
                 <br>
-
-                <p>
-                    Try another keyword,
-                    location or filter.
-                </p>
-
+                <p>There are no jobs matching your search.</p>
             </div>
-
         `;
 
         return;
     }
 
 
-    box.innerHTML =
-        list.map(function(job,index){
+    box.innerHTML = jobs.map(function(job,index){
 
-            const title =
-                job.title ||
-                "Job Opportunity";
+        return `
 
-            const company =
-                job.company ||
-                "Company";
+        <div class="job">
 
-            const location =
-                job.location ||
-                "Nigeria";
+            <h3>
+                ${safe(job.title)}
+            </h3>
 
-            const type =
-                job.type ||
-                "Full-time";
+            <p>
+                <strong>Company:</strong>
+                ${safe(job.company)}
+            </p>
 
-            const salary =
-                Number(job.salary || 0);
+            <p>
+                📍 ${safe(job.location)}
+            </p>
 
-            const description =
-                job.description ||
-                "No job description provided.";
+            <p>
+                💰 ₦${Number(job.salary || 0).toLocaleString()}
+            </p>
 
+            <span class="tag">
+                ${safe(job.type)}
+            </span>
 
-            return `
+            <p>
+                ${safe(job.description)}
+            </p>
 
-                <div class="job">
+            <button
+                class="apply"
+                onclick="applyJob(${index})"
+            >
+                View / Apply
+            </button>
 
-                    <h3>
-                        ${escapeHTML(title)}
-                    </h3>
+        </div>
 
-                    <p>
-                        <strong>
-                            Company:
-                        </strong>
+        `;
 
-                        ${escapeHTML(company)}
-                    </p>
-
-                    <p>
-                        📍
-                        ${escapeHTML(location)}
-                    </p>
-
-                    ${
-                        salary > 0
-                        ?
-                        `
-                        <p>
-                            💰 ₦${salary.toLocaleString()}
-                            / month
-                        </p>
-                        `
-                        :
-                        ""
-                    }
-
-                    <span class="tag">
-                        ${escapeHTML(type)}
-                    </span>
-
-                    <p class="description">
-                        ${escapeHTML(description)}
-                    </p>
-
-                    <button
-                        class="apply"
-                        onclick="applyJob(${index})"
-                    >
-                        View / Apply
-                    </button>
-
-                </div>
-
-            `;
-
-        }).join("");
+    }).join("");
 
 }
-
-
-/* =====================================================
-   SEARCH JOBS
-===================================================== */
+    /* SEARCH */
 
 function searchJobs(){
 
@@ -733,8 +544,10 @@ function searchJobs(){
         .value;
 
     const salary =
-        document.getElementById("salary")
-        .value;
+        Number(
+            document.getElementById("salary")
+            .value || 0
+        );
 
 
     const results =
@@ -759,32 +572,35 @@ function searchJobs(){
                 Number(job.salary || 0);
 
 
-            const matchesKeyword =
-                !keyword ||
-                title.includes(keyword) ||
-                company.includes(keyword);
+            return (
 
+                (
+                    !keyword ||
+                    title.includes(keyword) ||
+                    company.includes(keyword)
+                )
 
-            const matchesLocation =
-                !location ||
-                jobLocation.includes(location);
+                &&
 
+                (
+                    !location ||
+                    jobLocation.includes(location)
+                )
 
-            const matchesType =
-                !type ||
-                jobType === type;
+                &&
 
+                (
+                    !type ||
+                    jobType === type
+                )
 
-            const matchesSalary =
-                !salary ||
-                jobSalary >= Number(salary);
+                &&
 
+                (
+                    !salary ||
+                    jobSalary >= salary
+                )
 
-            return(
-                matchesKeyword &&
-                matchesLocation &&
-                matchesType &&
-                matchesSalary
             );
 
         });
@@ -795,378 +611,80 @@ function searchJobs(){
 }
 
 
-/* =====================================================
-   LOAD JOBS
-===================================================== */
+/* LOAD JOBS FROM SUPABASE */
 
-async function loadJobsFromSupabase(){
+async function loadJobs(){
 
     const box =
         document.getElementById("jobList");
 
 
     box.innerHTML = `
-
         <div class="loading">
             Loading jobs...
         </div>
-
     `;
 
 
-    try{
-
-        const result =
-            await supabaseClient
-                .from("Jobs")
-                .select(
-                    "id,title,company,location,type,salary,description,created_at"
-                )
-                .order(
-                    "created_at",
-                    {
-                        ascending:false
-                    }
-                );
-
-
-        console.log(
-            "SUPABASE JOB DATA:",
-            result.data
-        );
-
-
-        console.log(
-            "SUPABASE JOB ERROR:",
-            result.error
-        );
-
-
-        if(result.error){
-
-            console.error(
-                "Could not load jobs:",
-                result.error
+    const result =
+        await db
+            .from("Jobs")
+            .select(
+                "id,title,company,location,type,salary,description,created_at"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
             );
 
 
-            allJobs =
-                [...backupJobs];
+    console.log(
+        "Jobs:",
+        result.data
+    );
 
 
-            displayJobs(allJobs);
-
-            return;
-
-        }
-
-
-        if(
-            result.data &&
-            result.data.length > 0
-        ){
-
-            allJobs =
-                result.data;
-
-        }else{
-
-            allJobs =
-                [...backupJobs];
-
-        }
+    console.log(
+        "Jobs error:",
+        result.error
+    );
 
 
-        displayJobs(allJobs);
+    if(result.error){
 
+        box.innerHTML = `
 
-    }catch(error){
+            <div class="no-jobs">
 
-        console.error(
-            "JOB LOADING ERROR:",
-            error
-        );
+                <h3>
+                    Could not load jobs
+                </h3>
 
+                <p>
+                    ${safe(result.error.message)}
+                </p>
 
-        allJobs =
-            [...backupJobs];
+            </div>
 
+        `;
 
-        displayJobs(allJobs);
+        return;
 
     }
+
+
+    allJobs =
+        result.data || [];
+
+
+    displayJobs(allJobs);
 
 }
 
 
-/* =====================================================
-   APPLY FOR JOB
-===================================================== */
-
-function applyJob(index){
-
-    const job =
-        allJobs[index];
-
-
-    if(!job){
-        return;
-    }
-
-
-    const title =
-        job.title ||
-        "Job Opportunity";
-
-
-    const modal =
-        document.createElement("div");
-
-
-    modal.className =
-        "modal";
-
-
-    modal.innerHTML = `
-
-        <div class="modal-box">
-
-            <h2>
-                Apply for Job
-            </h2>
-
-            <br>
-
-            <p>
-                Applying for:
-                <strong>
-                    ${escapeHTML(title)}
-                </strong>
-            </p>
-
-            <br>
-
-            <input
-                id="appName"
-                type="text"
-                placeholder="Full name"
-            >
-
-            <input
-                id="appEmail"
-                type="email"
-                placeholder="Email address"
-            >
-
-            <input
-                id="appPhone"
-                type="tel"
-                placeholder="Phone number"
-            >
-
-            <input
-                id="appLocation"
-                type="text"
-                placeholder="Your location"
-            >
-
-            <label>
-                <strong>
-                    Upload CV
-                </strong>
-            </label>
-
-            <br><br>
-
-            <input
-                id="cvFile"
-                type="file"
-                accept=".pdf,.doc,.docx"
-            >
-
-            <div
-                id="uploadStatus"
-                class="status"
-            ></div>
-
-            <button
-                id="submitApplication"
-            >
-                Submit Application
-            </button>
-
-            <button
-                class="cancel"
-                id="cancelApplication"
-            >
-                Cancel
-            </button>
-
-        </div>
-
-    `;
-
-
-    document.body.appendChild(modal);
-
-
-    document.getElementById(
-        "cancelApplication"
-    ).onclick = function(){
-
-        modal.remove();
-
-    };
-
-
-    document.getElementById(
-        "submitApplication"
-    ).onclick =
-        async function(){
-
-            const submitButton =
-                document.getElementById(
-                    "submitApplication"
-                );
-
-
-            const status =
-                document.getElementById(
-                    "uploadStatus"
-                );
-
-
-            const name =
-                document.getElementById(
-                    "appName"
-                ).value.trim();
-
-
-            const email =
-                document.getElementById(
-                    "appEmail"
-                ).value.trim();
-
-
-            const phone =
-                document.getElementById(
-                    "appPhone"
-                ).value.trim();
-
-
-            const location =
-                document.getElementById(
-                    "appLocation"
-                ).value.trim();
-
-
-            const cv =
-                document.getElementById(
-                    "cvFile"
-                ).files[0];
-
-
-            if(
-                !name ||
-                !email ||
-                !phone ||
-                !location
-            ){
-
-                alert(
-                    "Please complete all your details."
-                );
-
-                return;
-
-            }
-
-
-            if(!email.includes("@")){
-
-                alert(
-                    "Please enter a valid email address."
-                );
-
-                return;
-
-            }
-
-
-            if(!cv){
-
-                alert(
-                    "Please select your CV first."
-                );
-
-                return;
-
-            }
-
-
-            const extension =
-                cv.name
-                    .split(".")
-                    .pop()
-                    .toLowerCase();
-
-
-            if(
-                !["pdf","doc","docx"]
-                .includes(extension)
-            ){
-
-                alert(
-                    "Please upload a PDF, DOC or DOCX file."
-                );
-
-                return;
-
-            }
-
-
-            if(
-                cv.size >
-                5 * 1024 * 1024
-            ){
-
-                alert(
-                    "Your CV is too large. Maximum size is 5MB."
-                );
-
-                return;
-
-            }
-
-
-            submitButton.disabled =
-                true;
-
-
-            submitButton.innerText =
-                "Uploading CV...";
-
-
-            status.innerText =
-                "Uploading your CV...";
-
-
-            const safeFileName =
-                cv.name.replace(
-                    /[^a-zA-Z0-9._-]/g,
-                    "_"
-                );
-
-
-            const fileName =
-                Date.now() +
-                "_" +
-                safeFileName;
-    <script>
-
-/* =====================================================
-   POST A JOB
-===================================================== */
+/* POST A JOB */
 
 function postJob(){
 
@@ -1175,29 +693,29 @@ function postJob(){
 
     modal.className = "modal";
 
+
     modal.innerHTML = `
 
         <div class="modal-box">
 
-            <h2>Post a Job</h2>
+            <h2>
+                Post a Job
+            </h2>
 
             <br>
 
             <input
                 id="jobTitle"
-                type="text"
                 placeholder="Job title"
             >
 
             <input
                 id="jobCompany"
-                type="text"
                 placeholder="Company name"
             >
 
             <input
                 id="jobLocation"
-                type="text"
                 placeholder="Location"
             >
 
@@ -1228,18 +746,13 @@ function postJob(){
             <input
                 id="jobSalary"
                 type="number"
-                placeholder="Monthly salary in ₦"
+                placeholder="Monthly salary ₦"
             >
 
             <textarea
                 id="jobDescription"
                 placeholder="Job description"
             ></textarea>
-
-            <div
-                id="jobStatus"
-                class="status"
-            ></div>
 
             <button id="submitJob">
                 Publish Job
@@ -1255,6 +768,7 @@ function postJob(){
         </div>
 
     `;
+
 
     document.body.appendChild(modal);
 
@@ -1272,46 +786,32 @@ function postJob(){
         "submitJob"
     ).onclick = async function(){
 
-        const button =
-            document.getElementById(
-                "submitJob"
-            );
-
-        const status =
-            document.getElementById(
-                "jobStatus"
-            );
-
-
         const title =
             document.getElementById(
                 "jobTitle"
             ).value.trim();
-
 
         const company =
             document.getElementById(
                 "jobCompany"
             ).value.trim();
 
-
         const location =
             document.getElementById(
                 "jobLocation"
             ).value.trim();
-
 
         const type =
             document.getElementById(
                 "jobType"
             ).value;
 
-
         const salary =
-            document.getElementById(
-                "jobSalary"
-            ).value;
-
+            Number(
+                document.getElementById(
+                    "jobSalary"
+                ).value
+            );
 
         const description =
             document.getElementById(
@@ -1329,7 +829,7 @@ function postJob(){
         ){
 
             alert(
-                "Please complete all job details."
+                "Please fill in all fields."
             );
 
             return;
@@ -1337,113 +837,44 @@ function postJob(){
         }
 
 
+        const button =
+            document.getElementById(
+                "submitJob"
+            );
+
+
         button.disabled = true;
 
         button.innerText =
             "Publishing...";
 
-        status.innerText =
-            "Publishing your job...";
+
+        const result =
+            await db
+                .from("Jobs")
+                .insert([
+                    {
+                        title:title,
+                        company:company,
+                        location:location,
+                        type:type,
+                        salary:salary,
+                        description:description
+                    }
+                ]);
 
 
-        try{
-
-            const result =
-                await supabaseClient
-                    .from("Jobs")
-                    .insert([
-                        {
-                            title:title,
-                            company:company,
-                            location:location,
-                            type:type,
-                            salary:Number(salary),
-                            description:description
-                        }
-                    ])
-                    .select();
+        console.log(
+            "Publish result:",
+            result
+        );
 
 
-            console.log(
-                "POST JOB RESULT:",
-                result
-            );
-
-
-            if(result.error){
-
-                console.error(
-                    "POST JOB ERROR:",
-                    result.error
-                );
-
-                alert(
-                    "Could not publish job: " +
-                    result.error.message
-                );
-
-                button.disabled = false;
-
-                button.innerText =
-                    "Publish Job";
-
-                status.innerText = "";
-
-                return;
-
-            }
-
-
-            modal.innerHTML = `
-
-                <div class="modal-box success">
-
-                    <h2>
-                        Job Published!
-                    </h2>
-
-                    <br>
-
-                    <p>
-                        Your job has been
-                        successfully published
-                        on JobLink NG.
-                    </p>
-
-                    <br>
-
-                    <button
-                        id="closeJobSuccess"
-                    >
-                        Done
-                    </button>
-
-                </div>
-
-            `;
-
-
-            document.getElementById(
-                "closeJobSuccess"
-            ).onclick = function(){
-
-                modal.remove();
-
-                loadJobsFromSupabase();
-
-            };
-
-
-        }catch(error){
-
-            console.error(
-                "POST JOB EXCEPTION:",
-                error
-            );
+        if(result.error){
 
             alert(
-                "Something went wrong: " +
-                error.message
+                "Could not publish job:\n\n" +
+                result.error.message
             );
 
             button.disabled = false;
@@ -1451,36 +882,93 @@ function postJob(){
             button.innerText =
                 "Publish Job";
 
-            status.innerText = "";
+            return;
 
         }
+
+
+        modal.innerHTML = `
+
+            <div class="modal-box success">
+
+                <h2>
+                    Job Published!
+                </h2>
+
+                <br>
+
+                <p>
+                    Your job was successfully
+                    published.
+                </p>
+
+                <br>
+
+                <button id="closeJob">
+                    Done
+                </button>
+
+            </div>
+
+        `;
+
+
+        document.getElementById(
+            "closeJob"
+        ).onclick = function(){
+
+            modal.remove();
+
+            loadJobs();
+
+        };
 
     };
 
 }
 
 
-/* =====================================================
-   START WEBSITE
-===================================================== */
+/* APPLY */
+
+function applyJob(index){
+
+    const job =
+        allJobs[index];
+
+
+    if(!job){
+
+        alert(
+            "Job information could not be found."
+        );
+
+        return;
+
+    }
+
+
+    alert(
+        "You selected: " +
+        job.title +
+        "\n\nCV application will be connected next."
+    );
+
+}
+
+
+/* START */
 
 document.addEventListener(
     "DOMContentLoaded",
     function(){
 
-        console.log(
-            "JobLink NG started"
-        );
-
-        loadJobsFromSupabase();
+        loadJobs();
 
     }
 );
 
 
-/* =====================================================
-   ENTER KEY SEARCH
-===================================================== */
+/* ENTER TO SEARCH */
 
 document.getElementById(
     "keyword"
