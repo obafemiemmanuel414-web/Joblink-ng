@@ -473,68 +473,213 @@ const jobs = [
 function displayJobs(list){
 
     const box =
-    document.getElementById("jobList");
+    document.getElementById(
+    "submitApplication"
+).onclick = async function(){
 
-    if(!box){
+    const name =
+    document.getElementById("appName").value.trim();
+
+    const email =
+    document.getElementById("appEmail").value.trim();
+
+    const phone =
+    document.getElementById("appPhone").value.trim();
+
+    const location =
+    document.getElementById("appLocation").value.trim();
+
+    const cv =
+    document.getElementById("cvFile").files[0];
+
+
+    /* CHECK USER DETAILS */
+
+    if(!name || !email || !phone || !location){
+
+        alert("Please complete all your details.");
+
         return;
     }
 
-    if(!list || list.length === 0){
 
-        box.innerHTML = `
-            <div class="no-jobs">
-                <h3>No jobs found</h3>
-                <br>
-                <p>
-                    Try another keyword, location or filter.
-                </p>
-            </div>
-        `;
+    /* CHECK CV */
+
+    if(!cv){
+
+        alert("Please select your CV first.");
 
         return;
     }
 
 
-    box.innerHTML = list.map(function(job){
+    /* CHECK FILE TYPE */
 
-        return `
+    const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ];
 
-        <div class="job">
+    const fileExtension =
+        cv.name.split(".").pop().toLowerCase();
 
-            <h3>
-                ${job.title}
-            </h3>
+    if(
+        !allowedTypes.includes(cv.type) &&
+        !["pdf","doc","docx"].includes(fileExtension)
+    ){
 
-            <p>
-                <strong>Company:</strong>
-                ${job.company}
-            </p>
+        alert(
+            "Please upload a PDF, DOC or DOCX file."
+        );
 
-            <p>
-                📍 ${job.location}
-            </p>
+        return;
+    }
 
-            <p>
-                💰 ₦${Number(job.salary).toLocaleString()} / month
-            </p>
 
-            <span class="tag">
-                ${job.type}
-            </span>
+    /* CHECK FILE SIZE - 5MB */
 
-            <button
-                class="apply"
-                onclick="applyJob('${escapeQuotes(job.title)}')"
-            >
-                View / Apply
-            </button>
+    if(cv.size > 5 * 1024 * 1024){
 
-        </div>
+        alert(
+            "Your CV is too large. Maximum size is 5MB."
+        );
 
-        `;
+        return;
+    }
 
-    }).join("");
 
+    /* CHECK SUPABASE */
+
+    if(!supabaseClient){
+
+        alert(
+            "The application service is currently unavailable."
+        );
+
+        return;
+    }
+
+
+    /* CREATE UNIQUE FILE NAME */
+
+    const safeFileName =
+        cv.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+
+    const fileName =
+        Date.now() + "_" + safeFileName;
+
+
+    try{
+
+        /* =========================
+           UPLOAD CV FIRST
+        ========================= */
+
+        const uploadResult =
+        await supabaseClient
+        .storage
+        .from("cvs")
+        .upload(
+            fileName,
+            cv,
+            {
+                cacheControl: "3600",
+                upsert: false
+            }
+        );
+
+
+        /* CHECK CV UPLOAD */
+
+        if(uploadResult.error){
+
+            console.error(
+                "CV Upload Error:",
+                uploadResult.error
+            );
+
+            alert(
+                "CV upload failed:\n\n" +
+                uploadResult.error.message
+            );
+
+            return;
+        }
+
+
+        /* =========================
+           CV UPLOADED SUCCESSFULLY
+        ========================= */
+
+        console.log(
+            "CV uploaded successfully:",
+            fileName
+        );
+
+
+        /* =========================
+           SAVE APPLICATION
+        ========================= */
+
+        const applicationResult =
+        await supabaseClient
+        .from("applications")
+        .insert([{
+
+            name: name,
+            email: email,
+            phone: phone,
+            location: location,
+            job_title: title,
+            cv_name: cv.name,
+            cv_path: fileName
+
+        }]);
+
+
+        /* CHECK APPLICATION */
+
+        if(applicationResult.error){
+
+            console.error(
+                "Application Error:",
+                applicationResult.error
+            );
+
+            alert(
+                "CV uploaded, but the application could not be saved:\n\n" +
+                applicationResult.error.message
+            );
+
+            return;
+        }
+
+
+        /* SUCCESS */
+
+        alert(
+            "Application submitted successfully!"
+        );
+
+        modal.remove();
+
+
+    }catch(error){
+
+        console.error(
+            "Unexpected Error:",
+            error
+        );
+
+        alert(
+            "Something went wrong:\n\n" +
+            error.message
+        );
+
+    }
+
+};
 }
 
 
