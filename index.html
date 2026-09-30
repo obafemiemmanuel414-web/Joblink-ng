@@ -969,21 +969,19 @@ function applyJob(title){
             ================================================= */
 
             const applicationResult =
-                await supabaseClient
-                    .from("Cvs")
-                    .insert([
-
-                    {
-    Name: name,
-    Email: email,
-    Phone: phone,
-    "Location valid _title": location,
-    Cv_name: cv.name,
-    "Job title": title,
-    "CV path": fileName
-                    }
-
-                    ]);
+    await supabaseClient
+        .from("Cvs")
+        .insert([
+            {
+                Name: name,
+                Email: email,
+                Phone: phone,
+                Location: location,
+                Cv_name: cv.name,
+                "Job title": title,
+                "CV path": fileName
+            }
+        ]);
 
 
             if(applicationResult.error){
