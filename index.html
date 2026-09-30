@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>JobLink NG TEST - Find Jobs in Nigeria</title>
+<title>JobLink NG - Find Jobs in Nigeria</title>
 
 <style>
+
 *{
     box-sizing:border-box;
     margin:0;
@@ -86,6 +87,11 @@ button{
 
 button:hover{
     opacity:.9;
+}
+
+button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
 }
 
 .container{
@@ -220,6 +226,11 @@ footer{
     font-weight:bold;
 }
 
+.success{
+    text-align:center;
+    padding:15px;
+}
+
 @media(max-width:600px){
 
     .hero h1{
@@ -233,7 +244,9 @@ footer{
     nav{
         display:none;
     }
+
 }
+
 </style>
 </head>
 
@@ -256,7 +269,9 @@ JobLink NG
 
 <section class="hero">
 
-<h1>Find Your Next Job</h1>
+<h1>
+Find Your Next Job
+</h1>
 
 <p>
 Connect with employers and discover job opportunities across Nigeria.
@@ -289,25 +304,52 @@ Search Jobs
 
 <div class="filters">
 
-<strong>Filter jobs:</strong>
+<strong>
+Filter jobs:
+</strong>
 
 <select id="type" onchange="searchJobs()">
 
-<option value="">All job types</option>
-<option value="Full-time">Full-time</option>
-<option value="Part-time">Part-time</option>
-<option value="Remote">Remote</option>
-<option value="Contract">Contract</option>
+<option value="">
+All job types
+</option>
+
+<option value="Full-time">
+Full-time
+</option>
+
+<option value="Part-time">
+Part-time
+</option>
+
+<option value="Remote">
+Remote
+</option>
+
+<option value="Contract">
+Contract
+</option>
 
 </select>
 
 
 <select id="salary" onchange="searchJobs()">
 
-<option value="">Any salary</option>
-<option value="100000">₦100,000+</option>
-<option value="200000">₦200,000+</option>
-<option value="300000">₦300,000+</option>
+<option value="">
+Any salary
+</option>
+
+<option value="100000">
+₦100,000+
+</option>
+
+<option value="200000">
+₦200,000+
+</option>
+
+<option value="300000">
+₦300,000+
+</option>
 
 </select>
 
@@ -388,10 +430,6 @@ Never send money to get a job. Be careful with requests for passwords, PINs, ban
    SUPABASE CONNECTION
 ===================================================== */
 
-/* =====================================================
-   SUPABASE CONNECTION
-===================================================== */
-
 const SUPABASE_URL =
 "https://eqxdoonyghqpykemhqde.supabase.co";
 
@@ -399,11 +437,12 @@ const SUPABASE_ANON_KEY =
 "sb_publishable_cgYERMnBcyshrtTcHpscvw_tgxBUc07";
 
 const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-    );
-    
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+
 /* =====================================================
    JOB LIST
 ===================================================== */
@@ -467,7 +506,7 @@ const jobs = [
 
 function escapeQuotes(text){
 
-    return text
+    return String(text)
         .replace(/\\/g,"\\\\")
         .replace(/'/g,"\\'");
 
@@ -593,14 +632,14 @@ function searchJobs(){
                 !keyword ||
 
                 job.title
-                .toLowerCase()
-                .includes(keyword)
+                    .toLowerCase()
+                    .includes(keyword)
 
                 ||
 
                 job.company
-                .toLowerCase()
-                .includes(keyword);
+                    .toLowerCase()
+                    .includes(keyword);
 
 
             const matchesLocation =
@@ -608,8 +647,8 @@ function searchJobs(){
                 !location ||
 
                 job.location
-                .toLowerCase()
-                .includes(location);
+                    .toLowerCase()
+                    .includes(location);
 
 
             const matchesType =
@@ -643,461 +682,225 @@ function searchJobs(){
    APPLY FOR JOB
 ===================================================== */
 
+function applyJob(title){
+
+    const modal =
+        document.createElement("div");
+
+    modal.className = "modal";
+
+
+    modal.innerHTML = `
+
+        <div class="modal-box">
+
+            <h2>
+                Apply for Job
+            </h2>
+
+            <br>
+
+            <p>
+                Applying for:
+                <strong>${title}</strong>
+            </p>
+
+            <br>
+
+            <input
+                id="appName"
+                type="text"
+                placeholder="Full name"
+            >
+
+            <input
+                id="appEmail"
+                type="email"
+                placeholder="Email address"
+            >
+
+            <input
+                id="appPhone"
+                type="tel"
+                placeholder="Phone number"
+            >
+
+            <input
+                id="appLocation"
+                type="text"
+                placeholder="Your location"
+            >
+
+            <label>
+                <strong>
+                    Upload CV
+                </strong>
+            </label>
+
+            <br><br>
+
+            <input
+                id="cvFile"
+                type="file"
+                accept=".pdf,.doc,.docx"
+            >
+
+            <div
+                id="uploadStatus"
+                class="status"
+            ></div>
+
+            <button id="submitApplication">
+                Submit Application
+            </button>
+
+            <button
+                class="cancel"
+                id="cancelApplication"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(modal);
+
+
+    /* CANCEL */
+
+    document.getElementById(
+        "cancelApplication"
     ).onclick = function(){
-function applyJob(title){
-
-    const modal = document.createElement("div");
-    modal.className = "modal";
-
-    modal.innerHTML = `
-        <div class="modal-box">
-
-            <h2>Apply for Job</h2>
-
-            <br>
-
-            <p>
-                Applying for:
-                <strong>${title}</strong>
-            </p>
-
-            <br>
-
-            <input
-                id="appName"
-                type="text"
-                placeholder="Full name"
-            >
-
-            <input
-                id="appEmail"
-                type="email"
-                placeholder="Email address"
-            >
-
-            <input
-                id="appPhone"
-                type="tel"
-                placeholder="Phone number"
-            >
-
-            <input
-                id="appLocation"
-                type="text"
-                placeholder="Your location"
-            >
-
-            <label>
-                <strong>Upload CV</strong>
-            </label>
-
-            <br><br>
-
-            <input
-                id="cvFile"
-                type="file"
-                accept=".pdf,.doc,.docx"
-            >
-
-            <div
-                id="uploadStatus"
-                class="status"
-            ></div>
-
-            <button id="submitApplication">
-                Submit Application
-            </button>
-
-            <button
-                class="cancel"
-                id="cancelApplication"
-            >
-                Cancel
-            </button>
-
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    document.getElementById("cancelApplication").onclick =
-    function(){
-        modal.remove();
-    };
-
-    document.getElementById("submitApplication").onclick =
-    async function(){
-
-        const submitButton =
-            document.getElementById("submitApplication");
-
-        const status =
-            document.getElementById("uploadStatus");
-
-        const name =
-            document.getElementById("appName").value.trim();
-
-        const email =
-            document.getElementById("appEmail").value.trim();
-
-        const phone =
-            document.getElementById("appPhone").value.trim();
-
-        const location =
-            document.getElementById("appLocation").value.trim();
-
-        const cv =
-            document.getElementById("cvFile").files[0];
-
-        if(!name || !email || !phone || !location){
-            alert("Please complete all your details.");
-            return;
-        }
-
-        if(!email.includes("@")){
-            alert("Please enter a valid email address.");
-            return;
-        }
-
-        if(!cv){
-            alert("Please select your CV first.");
-            return;
-        }
-
-        const extension =
-            cv.name.split(".").pop().toLowerCase();
-
-        if(!["pdf","doc","docx"].includes(extension)){
-            alert("Please upload a PDF, DOC or DOCX file.");
-            return;
-        }
-
-        if(cv.size > 5 * 1024 * 1024){
-            alert("Your CV is too large. Maximum size is 5MB.");
-            return;
-        }
-
-        submitButton.disabled = true;
-        submitButton.innerText = "Uploading CV...";
-        status.innerText = "Uploading your CV...";
-
-        const safeFileName =
-            cv.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-
-        const fileName =
-            Date.now() + "_" + safeFileName;
-
-        try{
-
-            /* UPLOAD CV */
-
-            const uploadResult =
-                await supabaseClient
-                .storage
-                .from("cvs")
-                .upload(
-                    fileName,
-                    cv,
-                    {
-                        cacheControl:"3600",
-                        upsert:false
-                    }
-                );
-
-            if(uploadResult.error){
-                alert(
-                    "CV upload failed:\n\n" +
-                    uploadResult.error.message
-                );
-
-                submitButton.disabled = false;
-                submitButton.innerText =
-                    "Submit Application";
-
-                return;
-            }
-
-            status.innerText =
-                "CV uploaded. Saving application...";
-
-            submitButton.innerText =
-               <footer>
-    ...
-</footer>
-
-<script>
-
-const SUPABASE_URL =
-"https://eqxdoonyghqpykemhqde.supabase.co";
-
-const SUPABASE_ANON_KEY =
-"YOUR_EXISTING_KEY";
-
-const supabaseClient =
-window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-);
-
-
-/* =====================================================
-   APPLY FOR JOB
-===================================================== */
-
-async function applyJob(title){
-
-    const name = prompt("Enter your full name:");
-    if(!name) return;
-
-    const email = prompt("Enter your email:");
-    if(!email) return;
-
-    const phone = prompt("Enter your phone number:");
-    if(!phone) return;
-
-    const location = prompt("Enter your location:");
-    if(!location) return;
-
-
-    const cvInput = document.createElement("input");
-
-    cvInput.type = "file";
-    cvInput.accept = ".pdf,.doc,.docx";
-
-    document.body.appendChild(cvInput);
-
-    cvInput.click();
-
-
-    cvInput.onchange = async function(){
-
-        const cv = cvInput.files[0];
-
-        if(!cv){
-
-            alert("Please select your CV.");
-
-            cvInput.remove();
-
-            return;
-        }
-
-
-        alert("Uploading CV...");
-
-
-        try{
-
-            const fileName =
-                Date.now() + "_" + cv.name;
-
-
-            /* UPLOAD CV */
-
-            const uploadResult =
-                await supabaseClient
-                .storage
-                .from("cvs")
-                .upload(
-                    fileName,
-                    cv,
-                    {
-                        cacheControl:"3600",
-                        upsert:false
-                    }
-                );
-
-
-            if(uploadResult.error){
-
-                alert(
-                    "CV upload failed:\n\n" +
-                    uploadResult.error.message
-                );
-
-                cvInput.remove();
-
-                return;
-            }
-
-
-            /* SAVE APPLICANT */
-
-            const applicationResult =
-                await supabaseClient
-                .from("Cvs")
-                .insert([{
-
-                    Name: name,
-                    Email: email,
-                    Phone: phone,
-                    Location: location,
-                    "Job title": title,
-                    Cv_name: cv.name,
-                    "CV path": fileName
-
-/* =====================================================
-   APPLY FOR JOB
-===================================================== */
-
-function applyJob(title){
-
-    const modal = document.createElement("div");
-
-    modal.className = "modal";
-
-    modal.innerHTML = `
-
-        <div class="modal-box">
-
-            <h2>Apply for Job</h2>
-
-            <br>
-
-            <p>
-                Applying for:
-                <strong>${title}</strong>
-            </p>
-
-            <br>
-
-            <input
-                id="appName"
-                type="text"
-                placeholder="Full name"
-            >
-
-            <input
-                id="appEmail"
-                type="email"
-                placeholder="Email address"
-            >
-
-            <input
-                id="appPhone"
-                type="tel"
-                placeholder="Phone number"
-            >
-
-            <input
-                id="appLocation"
-                type="text"
-                placeholder="Your location"
-            >
-
-            <label>
-                <strong>Upload CV</strong>
-            </label>
-
-            <br><br>
-
-            <input
-                id="cvFile"
-                type="file"
-                accept=".pdf,.doc,.docx"
-            >
-
-            <div
-                id="uploadStatus"
-                class="status"
-            ></div>
-
-            <button id="submitApplication">
-                Submit Application
-            </button>
-
-            <button
-                class="cancel"
-                id="cancelApplication"
-            >
-                Cancel
-            </button>
-
-        </div>
-
-    `;
-
-    document.body.appendChild(modal);
-
-
-    document.getElementById("cancelApplication").onclick =
-    function(){
 
         modal.remove();
 
     };
 
 
-    document.getElementById("submitApplication").onclick =
-    async function(){
+    /* SUBMIT */
+
+    document.getElementById(
+        "submitApplication"
+    ).onclick = async function(){
 
         const submitButton =
-            document.getElementById("submitApplication");
+            document.getElementById(
+                "submitApplication"
+            );
 
         const status =
-            document.getElementById("uploadStatus");
+            document.getElementById(
+                "uploadStatus"
+            );
+
 
         const name =
-            document.getElementById("appName").value.trim();
+            document.getElementById(
+                "appName"
+            ).value.trim();
+
 
         const email =
-            document.getElementById("appEmail").value.trim();
+            document.getElementById(
+                "appEmail"
+            ).value.trim();
+
 
         const phone =
-            document.getElementById("appPhone").value.trim();
+            document.getElementById(
+                "appPhone"
+            ).value.trim();
+
 
         const location =
-            document.getElementById("appLocation").value.trim();
+            document.getElementById(
+                "appLocation"
+            ).value.trim();
+
 
         const cv =
-            document.getElementById("cvFile").files[0];
+            document.getElementById(
+                "cvFile"
+            ).files[0];
 
 
-        if(!name || !email || !phone || !location){
+        /* VALIDATE DETAILS */
 
-            alert("Please complete all your details.");
+        if(
+            !name ||
+            !email ||
+            !phone ||
+            !location
+        ){
+
+            alert(
+                "Please complete all your details."
+            );
 
             return;
+
         }
 
 
-        if(!email.includes("@")){
+        if(
+            !email.includes("@")
+        ){
 
-            alert("Please enter a valid email address.");
+            alert(
+                "Please enter a valid email address."
+            );
 
             return;
+
         }
 
 
         if(!cv){
 
-            alert("Please select your CV first.");
+            alert(
+                "Please select your CV first."
+            );
 
             return;
+
         }
 
 
         const extension =
-            cv.name.split(".").pop().toLowerCase();
+            cv.name
+            .split(".")
+            .pop()
+            .toLowerCase();
 
 
-        if(!["pdf","doc","docx"].includes(extension)){
+        if(
+            !["pdf","doc","docx"]
+            .includes(extension)
+        ){
 
             alert(
                 "Please upload a PDF, DOC or DOCX file."
             );
 
             return;
+
         }
 
 
-        if(cv.size > 5 * 1024 * 1024){
+        if(
+            cv.size >
+            5 * 1024 * 1024
+        ){
 
             alert(
                 "Your CV is too large. Maximum size is 5MB."
             );
 
             return;
+
         }
 
 
@@ -1118,40 +921,38 @@ function applyJob(title){
 
 
         const fileName =
-            Date.now() + "_" + safeFileName;
+            Date.now() +
+            "_" +
+            safeFileName;
 
 
         try{
 
-            /* UPLOAD CV */
+            /* =================================================
+               UPLOAD CV TO SUPABASE STORAGE
+            ================================================= */
 
             const uploadResult =
                 await supabaseClient
-                .storage
-                .from("cvs")
-                .upload(
-                    fileName,
-                    cv,
-                    {
-                        cacheControl:"3600",
-                        upsert:false
-                    }
-                );
+                    .storage
+                    .from("cvs")
+                    .upload(
+                        fileName,
+                        cv,
+                        {
+                            cacheControl:"3600",
+                            upsert:false
+                        }
+                    );
 
 
             if(uploadResult.error){
 
-                alert(
-                    "CV upload failed:\n\n" +
+                throw new Error(
+                    "CV upload failed: " +
                     uploadResult.error.message
                 );
 
-                submitButton.disabled = false;
-
-                submitButton.innerText =
-                    "Submit Application";
-
-                return;
             }
 
 
@@ -1163,307 +964,102 @@ function applyJob(title){
                 "Saving Application...";
 
 
-            /* SAVE APPLICANT */
+            /* =================================================
+               SAVE APPLICANT TO CVS TABLE
+            ================================================= */
 
             const applicationResult =
                 await supabaseClient
-                .from("Cvs")
-                .insert([{
+                    .from("Cvs")
+                    .insert([
 
-                    Name: name,
-                    Email: email,
-                    Phone: phone,
-                    Location: location,
-                    "Job title": title,
-                    Cv_name: cv.name,
-                    "CV path": fileName
+                        {
+                            Name:name,
+                            Email:email,
+                            Phone:phone,
+                            Location:location,
+                            "Job title":title,
+                            Cv_name:cv.name,
+                            "CV path":fileName
+                        }
 
-                }]);
+                    ]);
 
 
             if(applicationResult.error){
 
-                alert(
-                    "CV uploaded, but application was not saved:\n\n" +
+                throw new Error(
+                    "Application could not be saved: " +
                     applicationResult.error.message
                 );
 
-                submitButton.disabled = false;
-
-                submitButton.innerText =
-                    "Submit Application";
-/* =====================================================
-   APPLY FOR JOB
-===================================================== */
-
-function applyJob(title){
-
-    const modal = document.createElement("div");
-
-    modal.className = "modal";
-
-    modal.innerHTML = `
-        <div class="modal-box">
-
-            <h2>Apply for Job</h2>
-
-            <br>
-
-            <p>
-                Applying for:
-                <strong>${title}</strong>
-            </p>
-
-            <br>
-
-            <input
-                id="appName"
-                type="text"
-                placeholder="Full name"
-            >
-
-            <input
-                id="appEmail"
-                type="email"
-                placeholder="Email address"
-            >
-
-            <input
-                id="appPhone"
-                type="tel"
-                placeholder="Phone number"
-            >
-
-            <input
-                id="appLocation"
-                type="text"
-                placeholder="Your location"
-            >
-
-            <label>
-                <strong>Upload CV</strong>
-            </label>
-
-            <br><br>
-
-            <input
-                id="cvFile"
-                type="file"
-                accept=".pdf,.doc,.docx"
-            >
-
-            <div
-                id="uploadStatus"
-                class="status"
-            ></div>
-
-            <button id="submitApplication">
-                Submit Application
-            </button>
-
-            <button
-                class="cancel"
-                id="cancelApplication"
-            >
-                Cancel
-            </button>
-
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-
-
-    document.getElementById("cancelApplication").onclick =
-    function(){
-
-        modal.remove();
-
-    };
-
-
-    document.getElementById("submitApplication").onclick =
-    async function(){
-
-        const submitButton =
-            document.getElementById("submitApplication");
-
-        const status =
-            document.getElementById("uploadStatus");
-
-        const name =
-            document.getElementById("appName").value.trim();
-
-        const email =
-            document.getElementById("appEmail").value.trim();
-
-        const phone =
-            document.getElementById("appPhone").value.trim();
-
-        const location =
-            document.getElementById("appLocation").value.trim();
-
-        const cv =
-            document.getElementById("cvFile").files[0];
-
-
-        if(!name || !email || !phone || !location){
-
-            alert("Please complete all your details.");
-
-            return;
-        }
-
-
-        if(!email.includes("@")){
-
-            alert("Please enter a valid email address.");
-
-            return;
-        }
-
-
-        if(!cv){
-
-            alert("Please select your CV first.");
-
-            return;
-        }
-
-
-        const extension =
-            cv.name.split(".").pop().toLowerCase();
-
-
-        if(!["pdf","doc","docx"].includes(extension)){
-
-            alert(
-                "Please upload a PDF, DOC or DOCX file."
-            );
-
-            return;
-        }
-
-
-        if(cv.size > 5 * 1024 * 1024){
-
-            alert(
-                "Your CV is too large. Maximum size is 5MB."
-            );
-
-            return;
-        }
-
-
-        submitButton.disabled = true;
-
-        submitButton.innerText =
-            "Uploading CV...";
-
-        status.innerText =
-            "Uploading your CV...";
-
-
-        const safeFileName =
-            cv.name.replace(
-                /[^a-zA-Z0-9._-]/g,
-                "_"
-            );
-
-
-        const fileName =
-            Date.now() + "_" + safeFileName;
-
-
-        try{
-
-            const uploadResult =
-                await supabaseClient
-                .storage
-                .from("cvs")
-                .upload(
-                    fileName,
-                    cv,
-                    {
-                        cacheControl:"3600",
-                        upsert:false
-                    }
-                );
-
-
-            if(uploadResult.error){
-
-                alert(
-                    "CV upload failed:\n\n" +
-                    uploadResult.error.message
-                );
-
-                submitButton.disabled = false;
-
-                submitButton.innerText =
-                    "Submit Application";
-
-                return;
             }
 
 
-            status.innerText =
-                "CV uploaded. Saving application...";
+            /* =================================================
+               SUCCESS
+            ================================================= */
 
-            submitButton.innerText =
-                "Saving Application...";
+            modal.innerHTML = `
+
+                <div class="modal-box success">
+
+                    <h2>
+                        Application Submitted!
+                    </h2>
+
+                    <br>
+
+                    <p>
+                        Your application for
+                        <strong>${title}</strong>
+                        has been submitted successfully.
+                    </p>
+
+                    <br>
+
+                    <button
+                        id="closeSuccess"
+                    >
+                        Done
+                    </button>
+
+                </div>
+
+            `;
 
 
-            const applicationResult =
-                await supabaseClient
-                .from("Cvs")
-                .insert([{
+            document.getElementById(
+                "closeSuccess"
+            ).onclick = function(){
 
-                    Name: name,
-                    Email: email,
-                    Phone: phone,
-                    Location: location,
-                    "Job title": title,
-                    Cv_name: cv.name,
-                    "CV path": fileName
+                modal.remove();
 
-                }]);
+            };
 
 
-            if(applicationResult.error){
+        }catch(error){
 
-                alert(
-                    "CV uploaded, but application was not saved:\n\n" +
-                    applicationResult.error.message
-                );
-
-                submitButton.disabled = false;
-
-                submitButton.innerText =
-                    "Submit Application";
-
-                return;
-            }
+            console.error(
+                "Application error:",
+                error
+            );
 
 
             alert(
-                "Application submitted successfully!"
+                error.message ||
+                "Something went wrong. Please try again."
             );
 
-            modal.remove();
-
-        }
-        catch(error){
-
-            alert(
-                "Something went wrong:\n\n" +
-                error.message
-            );
 
             submitButton.disabled = false;
 
             submitButton.innerText =
                 "Submit Application";
+
+            status.innerText =
+                "";
+
         }
 
     };
@@ -1472,7 +1068,7 @@ function applyJob(title){
 
 
 /* =====================================================
-   LOAD JOBS
+   LOAD JOBS WHEN PAGE OPENS
 ===================================================== */
 
 document.addEventListener(
