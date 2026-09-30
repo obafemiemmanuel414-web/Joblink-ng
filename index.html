@@ -973,16 +973,15 @@ function applyJob(title){
                     .from("Cvs")
                     .insert([
 
-                        {
-                            Name:name,
-                            Email:email,
-                            Phone:phone,
-                            "Location valid _title":location,
-"Job title":title,
-            
-                            Cv_name:cv.name,
-                            "CV path":fileName
-                        }
+                    {
+    Name: name,
+    Email: email,
+    Phone: phone,
+    "Location valid _title": location,
+    Cv_name: cv.name,
+    "Job title": title,
+    "CV path": fileName
+                    }
 
                     ]);
 
