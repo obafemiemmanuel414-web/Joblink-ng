@@ -1077,7 +1077,191 @@ document.addEventListener(
 
     }
 );
+function postJob(){
 
+    const modal = document.createElement("div");
+
+    modal.className = "modal";
+
+    modal.innerHTML = `
+
+        <div class="modal-box">
+
+            <h2>Post a Job</h2>
+
+            <br>
+
+            <input
+                id="jobTitle"
+                type="text"
+                placeholder="Job title"
+            >
+
+            <input
+                id="jobCompany"
+                type="text"
+                placeholder="Company name"
+            >
+
+            <input
+                id="jobLocation"
+                type="text"
+                placeholder="Location"
+            >
+
+            <select id="jobType"
+                style="width:100%;padding:12px;margin:8px 0 15px;border:1px solid #ddd;border-radius:7px;">
+
+                <option value="">Select job type</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Remote">Remote</option>
+                <option value="Contract">Contract</option>
+
+            </select>
+
+            <input
+                id="jobSalary"
+                type="number"
+                placeholder="Monthly salary"
+            >
+
+            <textarea
+                id="jobDescription"
+                placeholder="Job description"
+                style="width:100%;height:100px;padding:12px;margin:8px 0 15px;border:1px solid #ddd;border-radius:7px;">
+            </textarea>
+
+            <button id="submitJob">
+                Publish Job
+            </button>
+
+            <button
+                class="cancel"
+                id="cancelJob"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(modal);
+
+
+    document.getElementById("cancelJob").onclick = function(){
+
+        modal.remove();
+
+    };
+
+
+    document.getElementById("submitJob").onclick = async function(){
+
+        const title =
+            document.getElementById("jobTitle").value.trim();
+
+        const company =
+            document.getElementById("jobCompany").value.trim();
+
+        const location =
+            document.getElementById("jobLocation").value.trim();
+
+        const type =
+            document.getElementById("jobType").value;
+
+        const salary =
+            document.getElementById("jobSalary").value;
+
+        const description =
+            document.getElementById("jobDescription").value.trim();
+
+
+        if(!title || !company || !location || !type || !salary){
+
+            alert("Please complete all required fields.");
+
+            return;
+
+        }
+
+
+        const button =
+            document.getElementById("submitJob");
+
+        button.disabled = true;
+
+        button.innerText = "Publishing...";
+
+
+        const result =
+            await supabaseClient
+                .from("Jobs")
+                .insert([
+                    {
+                        title: title,
+                        company: company,
+                        location: location,
+                        type: type,
+                        salary: Number(salary),
+                        description: description
+                    }
+                ]);
+
+
+        if(result.error){
+
+            console.error(result.error);
+
+            alert(
+                "Could not publish job: " +
+                result.error.message
+            );
+
+            button.disabled = false;
+
+            button.innerText = "Publish Job";
+
+            return;
+
+        }
+
+
+        modal.innerHTML = `
+
+            <div class="modal-box success">
+
+                <h2>Job Published!</h2>
+
+                <br>
+
+                <p>
+                    Your job has been successfully posted.
+                </p>
+
+                <br>
+
+                <button id="closeJobSuccess">
+                    Done
+                </button>
+
+            </div>
+
+        `;
+
+
+        document.getElementById("closeJobSuccess").onclick = function(){
+
+            modal.remove();
+
+            loadJobsFromSupabase();
+
+        };
+
+    };
+
+    }
 </script>
 
 </body>
