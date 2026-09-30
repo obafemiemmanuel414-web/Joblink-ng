@@ -388,46 +388,42 @@ Never send money to get a job. Be careful with requests for passwords, PINs, ban
    SUPABASE CONNECTION
 ===================================================== */
 
-const SUPABASE_URL = "https://eqxdoonyghqpykemhqde.supabase.co";
+/* =====================================================
+   SUPABASE CONNECTION
+===================================================== */
+
+const SUPABASE_URL =
+"https://eqxdoonyghqpykemhqde.supabase.co";
 
 const SUPABASE_ANON_KEY =
 "sb_publishable_cgYERMnBcyshrtTcHpscvw_tgxBUc07";
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-);
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+/* TEST SUPABASE STORAGE */
+
 supabaseClient.storage.listBuckets()
-    .then(result => {
+    .then(function(result){
+
         alert(
             "BUCKET TEST:\n\n" +
             JSON.stringify(result, null, 2)
         );
+
+    })
+    .catch(function(error){
+
+        alert(
+            "SUPABASE TEST ERROR:\n\n" +
+            error.message
+        );
+
     });
-console.log("Supabase client created:", !!supabaseClient);
-    if(
-        window.supabase &&
-        typeof window.supabase.createClient === "function"
-    ){
-
-        supabaseClient =
-            window.supabase.createClient(
-                SUPABASE_URL,
-                SUPABASE_ANON_KEY
-            );
-
-    }
-
-}catch(error){
-
-    console.error(
-        "Supabase connection unavailable:",
-        error
-    );
-
-}
-
-
 /* =====================================================
    JOB LIST
 ===================================================== */
