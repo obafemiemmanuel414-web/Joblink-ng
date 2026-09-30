@@ -414,7 +414,28 @@ return;
 
 }
 
-const { error } = await supabase
+const fileName =
+Date.now() + "_" + cv.name;
+
+const { error: uploadError } =
+await supabase.storage
+.from("cvs")
+.upload(fileName, cv);
+
+if(uploadError){
+
+console.error(uploadError);
+
+alert(
+"CV upload failed. Please try again."
+);
+
+return;
+
+}
+
+const { error } =
+await supabase
 .from("applications")
 .insert([{
 
@@ -423,10 +444,28 @@ email: email,
 phone: phone,
 location: location,
 job_title: title,
-cv_name: cv.name
+cv_name: cv.name,
+cv_path: fileName
 
 }]);
 
+if(error){
+
+console.error(error);
+
+alert(
+"Application could not be submitted. Please try again."
+);
+
+return;
+
+}
+
+alert(
+"Application submitted successfully!"
+);
+
+applicationBox.remove();
 if(error){
 
 console.error(error);
