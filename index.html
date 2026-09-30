@@ -1069,11 +1069,40 @@ function applyJob(title){
    LOAD JOBS WHEN PAGE OPENS
 ===================================================== */
 
+async function loadJobsFromSupabase(){
+
+    const result = await supabaseClient
+        .from("Jobs")
+        .select("*")
+        .order("created_at", { ascending:false });
+
+    if(result.error){
+
+        console.error("Could not load jobs:", result.error);
+
+        displayJobs(jobs);
+
+        return;
+    }
+
+    if(result.data && result.data.length > 0){
+
+        displayJobs(result.data);
+
+    }else{
+
+        displayJobs(jobs);
+
+    }
+
+}
+
+
 document.addEventListener(
     "DOMContentLoaded",
     function(){
 
-        displayJobs(jobs);
+        loadJobsFromSupabase();
 
     }
 );
