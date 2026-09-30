@@ -410,12 +410,27 @@ const supabaseClient =
 supabaseClient.storage.listBuckets()
     .then(function(result){
 
+        console.log("BUCKET RESULT:", result);
+
         alert(
             "BUCKET TEST:\n\n" +
-            JSON.stringify(result, null, 2)
+            "Data: " +
+            JSON.stringify(result.data, null, 2) +
+            "\n\nError: " +
+            JSON.stringify(result.error, null, 2)
         );
 
     })
+    .catch(function(error){
+
+        console.error("BUCKET TEST ERROR:", error);
+
+        alert(
+            "BUCKET TEST ERROR:\n\n" +
+            JSON.stringify(error, null, 2)
+        );
+
+    });
     .catch(function(error){
 
         alert(
