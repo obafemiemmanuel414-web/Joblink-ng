@@ -928,13 +928,13 @@ function postJob(){
 }
 
 
-/* APPLY */
+/* =====================================================
+   APPLY FOR JOB
+===================================================== */
 
 function applyJob(index){
 
-    const job =
-        allJobs[index];
-
+    const job = allJobs[index];
 
     if(!job){
 
@@ -947,14 +947,157 @@ function applyJob(index){
     }
 
 
-    alert(
-        "You selected: " +
-        job.title +
-        "\n\nCV application will be connected next."
-    );
+    const modal =
+        document.createElement("div");
 
-}
+    modal.className = "modal";
 
+
+    modal.innerHTML = `
+
+        <div class="modal-box">
+
+            <h2>
+                Apply for Job
+            </h2>
+
+            <br>
+
+            <p>
+                <strong>Job:</strong>
+                ${safe(job.title)}
+            </p>
+
+            <p>
+                <strong>Company:</strong>
+                ${safe(job.company)}
+            </p>
+
+            <br>
+
+            <input
+                id="applicantName"
+                type="text"
+                placeholder="Full name"
+            >
+
+            <input
+                id="applicantEmail"
+                type="email"
+                placeholder="Email address"
+            >
+
+            <input
+                id="applicantPhone"
+                type="tel"
+                placeholder="Phone number"
+            >
+
+            <label>
+                Upload CV
+            </label>
+
+            <input
+                id="applicantCV"
+                type="file"
+                accept=".pdf,.doc,.docx"
+            >
+
+            <button id="submitApplication">
+                Submit Application
+            </button>
+
+            <button
+                id="cancelApplication"
+                class="cancel"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(modal);
+
+
+    document.getElementById(
+        "cancelApplication"
+    ).onclick = function(){
+
+        modal.remove();
+
+    };
+
+
+    document.getElementById(
+        "submitApplication"
+    ).onclick = async function(){
+
+        const name =
+            document.getElementById(
+                "applicantName"
+            ).value.trim();
+
+        const email =
+            document.getElementById(
+                "applicantEmail"
+            ).value.trim();
+
+        const phone =
+            document.getElementById(
+                "applicantPhone"
+            ).value.trim();
+
+        const cv =
+            document.getElementById(
+                "applicantCV"
+            ).files[0];
+
+
+        if(
+            !name ||
+            !email ||
+            !phone ||
+            !cv
+        ){
+
+            alert(
+                "Please fill in all fields and upload your CV."
+            );
+
+            return;
+
+        }
+
+
+        const button =
+            document.getElementById(
+                "submitApplication"
+            );
+
+
+        button.disabled = true;
+
+        button.innerText =
+            "Submitting...";
+
+
+        alert(
+            "Application form is working.\n\n" +
+            "The CV upload and Supabase application saving will be connected next."
+        );
+
+
+        button.disabled = false;
+
+        button.innerText =
+            "Submit Application";
+
+    };
+
+    }
 
 /* START */
 
