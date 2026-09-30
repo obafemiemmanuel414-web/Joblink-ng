@@ -936,6 +936,248 @@ async function applyJob(title){
                     Cv_name: cv.name,
                     "CV path": fileName
 
+/* =====================================================
+   APPLY FOR JOB
+===================================================== */
+
+function applyJob(title){
+
+    const modal = document.createElement("div");
+
+    modal.className = "modal";
+
+    modal.innerHTML = `
+
+        <div class="modal-box">
+
+            <h2>Apply for Job</h2>
+
+            <br>
+
+            <p>
+                Applying for:
+                <strong>${title}</strong>
+            </p>
+
+            <br>
+
+            <input
+                id="appName"
+                type="text"
+                placeholder="Full name"
+            >
+
+            <input
+                id="appEmail"
+                type="email"
+                placeholder="Email address"
+            >
+
+            <input
+                id="appPhone"
+                type="tel"
+                placeholder="Phone number"
+            >
+
+            <input
+                id="appLocation"
+                type="text"
+                placeholder="Your location"
+            >
+
+            <label>
+                <strong>Upload CV</strong>
+            </label>
+
+            <br><br>
+
+            <input
+                id="cvFile"
+                type="file"
+                accept=".pdf,.doc,.docx"
+            >
+
+            <div
+                id="uploadStatus"
+                class="status"
+            ></div>
+
+            <button id="submitApplication">
+                Submit Application
+            </button>
+
+            <button
+                class="cancel"
+                id="cancelApplication"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(modal);
+
+
+    document.getElementById("cancelApplication").onclick =
+    function(){
+
+        modal.remove();
+
+    };
+
+
+    document.getElementById("submitApplication").onclick =
+    async function(){
+
+        const submitButton =
+            document.getElementById("submitApplication");
+
+        const status =
+            document.getElementById("uploadStatus");
+
+        const name =
+            document.getElementById("appName").value.trim();
+
+        const email =
+            document.getElementById("appEmail").value.trim();
+
+        const phone =
+            document.getElementById("appPhone").value.trim();
+
+        const location =
+            document.getElementById("appLocation").value.trim();
+
+        const cv =
+            document.getElementById("cvFile").files[0];
+
+
+        if(!name || !email || !phone || !location){
+
+            alert("Please complete all your details.");
+
+            return;
+        }
+
+
+        if(!email.includes("@")){
+
+            alert("Please enter a valid email address.");
+
+            return;
+        }
+
+
+        if(!cv){
+
+            alert("Please select your CV first.");
+
+            return;
+        }
+
+
+        const extension =
+            cv.name.split(".").pop().toLowerCase();
+
+
+        if(!["pdf","doc","docx"].includes(extension)){
+
+            alert(
+                "Please upload a PDF, DOC or DOCX file."
+            );
+
+            return;
+        }
+
+
+        if(cv.size > 5 * 1024 * 1024){
+
+            alert(
+                "Your CV is too large. Maximum size is 5MB."
+            );
+
+            return;
+        }
+
+
+        submitButton.disabled = true;
+
+        submitButton.innerText =
+            "Uploading CV...";
+
+        status.innerText =
+            "Uploading your CV...";
+
+
+        const safeFileName =
+            cv.name.replace(
+                /[^a-zA-Z0-9._-]/g,
+                "_"
+            );
+
+
+        const fileName =
+            Date.now() + "_" + safeFileName;
+
+
+        try{
+
+            /* UPLOAD CV */
+
+            const uploadResult =
+                await supabaseClient
+                .storage
+                .from("cvs")
+                .upload(
+                    fileName,
+                    cv,
+                    {
+                        cacheControl:"3600",
+                        upsert:false
+                    }
+                );
+
+
+            if(uploadResult.error){
+
+                alert(
+                    "CV upload failed:\n\n" +
+                    uploadResult.error.message
+                );
+
+                submitButton.disabled = false;
+
+                submitButton.innerText =
+                    "Submit Application";
+
+                return;
+            }
+
+
+            status.innerText =
+                "CV uploaded. Saving application...";
+
+
+            submitButton.innerText =
+                "Saving Application...";
+
+
+            /* SAVE APPLICANT */
+
+            const applicationResult =
+                await supabaseClient
+                .from("Cvs")
+                .insert([{
+
+                    Name: name,
+                    Email: email,
+                    Phone: phone,
+                    Location: location,
+                    "Job title": title,
+                    Cv_name: cv.name,
+                    "CV path": fileName
+
                 }]);
 
 
@@ -946,7 +1188,10 @@ async function applyJob(title){
                     applicationResult.error.message
                 );
 
-                cvInput.remove();
+                submitButton.disabled = false;
+
+                submitButton.innerText =
+                    "Submit Application";
 
                 return;
             }
@@ -956,7 +1201,9 @@ async function applyJob(title){
                 "Application submitted successfully!"
             );
 
-            cvInput.remove();
+
+            modal.remove();
+
 
         }
         catch(error){
@@ -966,9 +1213,14 @@ async function applyJob(title){
                 error.message
             );
 
-            cvInput.remove();
+            submitButton.disabled = false;
+
+            submitButton.innerText =
+                "Submit Application";
         }
+
     };
+
 }
 
 
@@ -984,8 +1236,3 @@ document.addEventListener(
 
     }
 );
-
-</script>
-
-</body>
-</html>
