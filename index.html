@@ -403,27 +403,7 @@ const supabaseClient =
         SUPABASE_URL,
         SUPABASE_ANON_KEY
     );
-
-
-
-    .catch(function(error){
-
-        console.error("BUCKET TEST ERROR:", error);
-
-        alert(
-            "BUCKET TEST ERROR:\n\n" +
-            JSON.stringify(error, null, 2)
-        );
-
-    });
-    .catch(function(error){
-
-        alert(
-            "SUPABASE TEST ERROR:\n\n" +
-            error.message
-        );
-
-    });
+    
 /* =====================================================
    JOB LIST
 ===================================================== */
