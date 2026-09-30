@@ -1100,9 +1100,27 @@ async function loadJobsFromSupabase(){
 
 document.addEventListener(
     "DOMContentLoaded",
-    function(){
+    async function(){
 
-        loadJobsFromSupabase();
+        const result =
+            await supabaseClient
+                .from("Jobs")
+                .select("*")
+                .order("created_at", { ascending:false });
+
+        console.log("JOBS FROM SUPABASE:", result);
+
+        if(result.error){
+
+            console.error(result.error);
+
+            displayJobs(jobs);
+
+            return;
+
+        }
+
+        displayJobs(result.data);
 
     }
 );
