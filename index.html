@@ -974,19 +974,19 @@ function applyJob(title){
             /* SAVE APPLICATION */
 
             const applicationResult =
-                await supabaseClient
-                .from("applications")
-                .insert([{
+    await supabaseClient
+    .from("Cvs")
+    .insert([{
 
-                    name:name,
-                    email:email,
-                    phone:phone,
-                    location:location,
-                    job_title:title,
-                    cv_name:cv.name,
-                    cv_path:fileName
+        Name: name,
+        Email: email,
+        Phone: phone,
+        "Location valid_title": location,
+        Cv_name: cv.name,
+        "Job title": title,
+        "CV path": fileName
 
-                }]);
+    }]);
 
 
             /* CHECK APPLICATION */
