@@ -399,7 +399,10 @@ const supabaseClient = window.supabase.createClient(
 );
 supabaseClient.storage.listBuckets()
     .then(result => {
-        console.log("BUCKET TEST:", result);
+        alert(
+            "BUCKET TEST:\n\n" +
+            JSON.stringify(result, null, 2)
+        );
     });
 console.log("Supabase client created:", !!supabaseClient);
     if(
