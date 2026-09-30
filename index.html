@@ -1022,6 +1022,8 @@ function applyJob(index){
     document.body.appendChild(modal);
 
 
+    /* CANCEL */
+
     document.getElementById(
         "cancelApplication"
     ).onclick = function(){
@@ -1030,6 +1032,8 @@ function applyJob(index){
 
     };
 
+
+    /* SUBMIT APPLICATION */
 
     document.getElementById(
         "submitApplication"
@@ -1055,6 +1059,8 @@ function applyJob(index){
                 "applicantCV"
             ).files[0];
 
+
+        /* VALIDATE */
 
         if(
             !name ||
@@ -1084,11 +1090,152 @@ function applyJob(index){
             "Submitting...";
 
 
-        
+        /* =================================================
+           UPLOAD CV
+        ================================================= */
+
+        const fileExtension =
+            cv.name
+                .split(".")
+                .pop()
+                .toLowerCase();
+
+
+        const fileName =
+            Date.now() +
+            "_" +
+            Math.random()
+                .toString(36)
+                .substring(2) +
+            "." +
+            fileExtension;
+
+
+        const filePath =
+            "applications/" +
+            fileName;
+
+
+        const uploadResult =
+            await db.storage
+                .from("cvs")
+                .upload(
+                    filePath,
+                    cv,
+                    {
+                        cacheControl:"3600",
+                        upsert:false
+                    }
+                );
+
+
+        /* CHECK UPLOAD */
+
+        if(uploadResult.error){
+
+            console.error(
+                "CV upload error:",
+                uploadResult.error
+            );
+
+            alert(
+                "CV upload failed:\n\n" +
+                uploadResult.error.message
+            );
+
+            button.disabled = false;
+
+            button.innerText =
+                "Submit Application";
+
+            return;
+
+        }
+
+
+        /* =================================================
+           SAVE APPLICATION
+        ================================================= */
+
+        const applicationResult =
+            await db
+                .from("Applications")
+                .insert([
+                    {
+                        job_id: job.id,
+                        applicant_name: name,
+                        applicant_email: email,
+                        applicant_phone: phone,
+                        cv_path: filePath
+                    }
+                ]);
+
+
+        /* CHECK APPLICATION */
+
+        if(applicationResult.error){
+
+            console.error(
+                "Application error:",
+                applicationResult.error
+            );
+
+            alert(
+                "Application could not be saved:\n\n" +
+                applicationResult.error.message
+            );
+
+            button.disabled = false;
+
+            button.innerText =
+                "Submit Application";
+
+            return;
+
+        }
+
+
+        /* =================================================
+           SUCCESS
+        ================================================= */
+
+        modal.innerHTML = `
+
+            <div class="modal-box success">
+
+                <h2>
+                    Application Submitted!
+                </h2>
+
+                <br>
+
+                <p>
+                    Your application has been
+                    successfully submitted.
+                </p>
+
+                <br>
+
+                <button id="closeApplication">
+                    Done
+                </button>
+
+            </div>
+
+        `;
+
+
+        document.getElementById(
+            "closeApplication"
+        ).onclick = function(){
+
+            modal.remove();
+
+        };
 
     };
 
-    }
+        }
 
 /* START */
 
