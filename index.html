@@ -643,21 +643,16 @@ function searchJobs(){
    APPLY FOR JOB
 ===================================================== */
 
+    ).onclick = function(){
 function applyJob(title){
 
-    const modal =
-        document.createElement("div");
-
+    const modal = document.createElement("div");
     modal.className = "modal";
 
-
     modal.innerHTML = `
-
         <div class="modal-box">
 
-            <h2>
-                Apply for Job
-            </h2>
+            <h2>Apply for Job</h2>
 
             <br>
 
@@ -701,7 +696,7 @@ function applyJob(title){
             <input
                 id="cvFile"
                 type="file"
-                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                accept=".pdf,.doc,.docx"
             >
 
             <div
@@ -709,9 +704,7 @@ function applyJob(title){
                 class="status"
             ></div>
 
-            <button
-                id="submitApplication"
-            >
+            <button id="submitApplication">
                 Submit Application
             </button>
 
@@ -723,211 +716,86 @@ function applyJob(title){
             </button>
 
         </div>
-
     `;
-
 
     document.body.appendChild(modal);
 
-
-    /* =================================================
-       CANCEL BUTTON
-    ================================================= */
-
-    document.getElementById(
-        "cancelApplication"
-    ).onclick = function(){
-
+    document.getElementById("cancelApplication").onclick =
+    function(){
         modal.remove();
-
     };
 
-
-    /* =================================================
-       SUBMIT APPLICATION
-    ================================================= */
-
-    document.getElementById(
-        "submitApplication"
-    ).onclick = async function(){
+    document.getElementById("submitApplication").onclick =
+    async function(){
 
         const submitButton =
-            document.getElementById(
-                "submitApplication"
-            );
-
+            document.getElementById("submitApplication");
 
         const status =
-            document.getElementById(
-                "uploadStatus"
-            );
-
+            document.getElementById("uploadStatus");
 
         const name =
-            document.getElementById(
-                "appName"
-            ).value.trim();
-
+            document.getElementById("appName").value.trim();
 
         const email =
-            document.getElementById(
-                "appEmail"
-            ).value.trim();
-
+            document.getElementById("appEmail").value.trim();
 
         const phone =
-            document.getElementById(
-                "appPhone"
-            ).value.trim();
-
+            document.getElementById("appPhone").value.trim();
 
         const location =
-            document.getElementById(
-                "appLocation"
-            ).value.trim();
-
+            document.getElementById("appLocation").value.trim();
 
         const cv =
-            document.getElementById(
-                "cvFile"
-            ).files[0];
+            document.getElementById("cvFile").files[0];
 
-
-        /* CHECK DETAILS */
-
-        if(
-            !name ||
-            !email ||
-            !phone ||
-            !location
-        ){
-
-            alert(
-                "Please complete all your details."
-            );
-
+        if(!name || !email || !phone || !location){
+            alert("Please complete all your details.");
             return;
         }
-
-
-        /* CHECK EMAIL */
 
         if(!email.includes("@")){
-
-            alert(
-                "Please enter a valid email address."
-            );
-
+            alert("Please enter a valid email address.");
             return;
         }
-
-
-        /* CHECK CV */
 
         if(!cv){
-
-            alert(
-                "Please select your CV first."
-            );
-
+            alert("Please select your CV first.");
             return;
         }
 
+        const extension =
+            cv.name.split(".").pop().toLowerCase();
 
-        /* CHECK FILE TYPE */
-
-        const fileExtension =
-            cv.name
-            .split(".")
-            .pop()
-            .toLowerCase();
-
-
-        const allowedExtensions = [
-            "pdf",
-            "doc",
-            "docx"
-        ];
-
-
-        if(
-            !allowedExtensions.includes(
-                fileExtension
-            )
-        ){
-
-            alert(
-                "Please upload a PDF, DOC or DOCX file."
-            );
-
+        if(!["pdf","doc","docx"].includes(extension)){
+            alert("Please upload a PDF, DOC or DOCX file.");
             return;
         }
 
-
-        /* CHECK FILE SIZE */
-
-        if(
-            cv.size >
-            5 * 1024 * 1024
-        ){
-
-            alert(
-                "Your CV is too large. Maximum size is 5MB."
-            );
-
+        if(cv.size > 5 * 1024 * 1024){
+            alert("Your CV is too large. Maximum size is 5MB.");
             return;
         }
-
-
-        /* CHECK SUPABASE */
-
-        if(!supabaseClient){
-
-            alert(
-                "The application service is currently unavailable."
-            );
-
-            return;
-        }
-
-
-        /* PREVENT DOUBLE SUBMISSION */
 
         submitButton.disabled = true;
-
-        submitButton.innerText =
-            "Uploading CV...";
-
-        status.innerText =
-            "Uploading your CV. Please wait...";
-
-
-        /* CREATE SAFE FILE NAME */
+        submitButton.innerText = "Uploading CV...";
+        status.innerText = "Uploading your CV...";
 
         const safeFileName =
-            cv.name.replace(
-                /[^a-zA-Z0-9._-]/g,
-                "_"
-            );
-
+            cv.name.replace(/[^a-zA-Z0-9._-]/g,"_");
 
         const fileName =
-            Date.now() +
-            "_" +
-            safeFileName;
-
+            Date.now() + "_" + safeFileName;
 
         try{
 
-            /* =========================================
-               STEP 1 — UPLOAD CV
-            ========================================= */
+            /* UPLOAD CV */
 
             const uploadResult =
                 await supabaseClient
                 .storage
                 .from("cvs")
-                               .upload(
+                .upload(
                     fileName,
                     cv,
                     {
@@ -936,33 +804,18 @@ function applyJob(title){
                     }
                 );
 
-
-            /* CHECK UPLOAD ERROR */
-
             if(uploadResult.error){
-
-                console.error(
-                    "CV Upload Error:",
-                    uploadResult.error
-                );
-
-                status.innerText = "";
-
                 alert(
                     "CV upload failed:\n\n" +
                     uploadResult.error.message
                 );
 
                 submitButton.disabled = false;
-
                 submitButton.innerText =
                     "Submit Application";
 
                 return;
             }
-
-
-            /* CV UPLOADED */
 
             status.innerText =
                 "CV uploaded. Saving application...";
@@ -971,73 +824,58 @@ function applyJob(title){
                 "Saving Application...";
 
 
-            /* SAVE APPLICATION */
+            /* SAVE APPLICANT */
 
             const applicationResult =
-    await supabaseClient
-    .from("Cvs")
-    .insert([{
+                await supabaseClient
+                .from("Cvs")
+                .insert([{
 
-        Name: name,
-        Email: email,
-        Phone: phone,
-        "Location valid_title": location,
-        Cv_name: cv.name,
-        "Job title": title,
-        "CV path": fileName
+                    Name: name,
+                    Email: email,
+                    Phone: phone,
+                    Location: location,
+                    "Job title": title,
+                    Cv_name: cv.name,
+                    "CV path": fileName
 
-    }]);
-
-
-            /* =========================================
-   SAVE APPLICATION
-========================================= */
-
-const applicationResult =
-    await supabaseClient
-    .from("Cvs")
-    .insert([{
-
-        Name: name,
-        Email: email,
-        Phone: phone,
-        "Location valid_title": location,
-        Cv_name: cv.name,
-        "Job title": title,
-        "CV path": fileName
-
-    }]);
+                }]);
 
 
-/* CHECK APPLICATION */
+            if(applicationResult.error){
 
-if(applicationResult.error){
+                alert(
+                    "CV uploaded, but application was not saved:\n\n" +
+                    applicationResult.error.message
+                );
 
-    console.error(
-        "Application Error:",
-        applicationResult.error
-    );
+                submitButton.disabled = false;
+                submitButton.innerText =
+                    "Submit Application";
 
-    status.innerText = "";
+                return;
+            }
 
-    alert(
-        "CV uploaded, but the application could not be saved:\n\n" +
-        applicationResult.error.message
-    );
 
-    submitButton.disabled = false;
+            alert(
+                "Application submitted successfully!"
+            );
 
-    submitButton.innerText =
-        "Submit Application";
+            modal.remove();
 
-    return;
-}
+        }catch(error){
 
+            alert(
+                "Something went wrong:\n\n" +
+                error.message
+            );
+
+            submitButton.disabled = false;
+            submitButton.innerText =
+                "Submit Application";
         }
-
     };
-
-}
+                    }
 
 
 /* =====================================================
