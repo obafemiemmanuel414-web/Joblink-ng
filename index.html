@@ -989,58 +989,49 @@ function applyJob(title){
     }]);
 
 
-            /* CHECK APPLICATION */
+            /* =========================================
+   SAVE APPLICATION
+========================================= */
 
-            if(applicationResult.error){
+const applicationResult =
+    await supabaseClient
+    .from("Cvs")
+    .insert([{
 
-                console.error(
-                    "Application Error:",
-                    applicationResult.error
-                );
+        Name: name,
+        Email: email,
+        Phone: phone,
+        "Location valid_title": location,
+        Cv_name: cv.name,
+        "Job title": title,
+        "CV path": fileName
 
-                status.innerText = "";
-
-                alert(
-                    "CV uploaded, but the application could not be saved:\n\n" +
-                    applicationResult.error.message
-                );
-
-                submitButton.disabled = false;
-
-                submitButton.innerText =
-                    "Submit Application";
-
-                return;
-            }
+    }]);
 
 
-            /* SUCCESS */
+/* CHECK APPLICATION */
 
-            alert(
-                "Application submitted successfully!"
-            );
+if(applicationResult.error){
 
-            modal.remove();
+    console.error(
+        "Application Error:",
+        applicationResult.error
+    );
 
+    status.innerText = "";
 
-        }catch(error){
+    alert(
+        "CV uploaded, but the application could not be saved:\n\n" +
+        applicationResult.error.message
+    );
 
-            console.error(
-                "Unexpected Error:",
-                error
-            );
+    submitButton.disabled = false;
 
-            status.innerText = "";
+    submitButton.innerText =
+        "Submit Application";
 
-            alert(
-                "Something went wrong:\n\n" +
-                error.message
-            );
-
-            submitButton.disabled = false;
-
-            submitButton.innerText =
-                "Submit Application";
+    return;
+}
 
         }
 
