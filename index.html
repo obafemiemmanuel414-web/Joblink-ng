@@ -944,4 +944,142 @@ function applyJob(title){
                 await supabaseClient
                 .storage
                 .from("cvs")
-               
+                               .upload(
+                    fileName,
+                    cv,
+                    {
+                        cacheControl:"3600",
+                        upsert:false
+                    }
+                );
+
+
+            /* CHECK UPLOAD ERROR */
+
+            if(uploadResult.error){
+
+                console.error(
+                    "CV Upload Error:",
+                    uploadResult.error
+                );
+
+                status.innerText = "";
+
+                alert(
+                    "CV upload failed:\n\n" +
+                    uploadResult.error.message
+                );
+
+                submitButton.disabled = false;
+
+                submitButton.innerText =
+                    "Submit Application";
+
+                return;
+            }
+
+
+            /* CV UPLOADED */
+
+            status.innerText =
+                "CV uploaded. Saving application...";
+
+            submitButton.innerText =
+                "Saving Application...";
+
+
+            /* SAVE APPLICATION */
+
+            const applicationResult =
+                await supabaseClient
+                .from("applications")
+                .insert([{
+
+                    name:name,
+                    email:email,
+                    phone:phone,
+                    location:location,
+                    job_title:title,
+                    cv_name:cv.name,
+                    cv_path:fileName
+
+                }]);
+
+
+            /* CHECK APPLICATION */
+
+            if(applicationResult.error){
+
+                console.error(
+                    "Application Error:",
+                    applicationResult.error
+                );
+
+                status.innerText = "";
+
+                alert(
+                    "CV uploaded, but the application could not be saved:\n\n" +
+                    applicationResult.error.message
+                );
+
+                submitButton.disabled = false;
+
+                submitButton.innerText =
+                    "Submit Application";
+
+                return;
+            }
+
+
+            /* SUCCESS */
+
+            alert(
+                "Application submitted successfully!"
+            );
+
+            modal.remove();
+
+
+        }catch(error){
+
+            console.error(
+                "Unexpected Error:",
+                error
+            );
+
+            status.innerText = "";
+
+            alert(
+                "Something went wrong:\n\n" +
+                error.message
+            );
+
+            submitButton.disabled = false;
+
+            submitButton.innerText =
+                "Submit Application";
+
+        }
+
+    };
+
+}
+
+
+/* =====================================================
+   LOAD JOBS
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        displayJobs(jobs);
+
+    }
+);
+
+</script>
+
+</body>
+</html>
