@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>JobLink NG - Find Jobs in Nigeria</title>
 
@@ -116,7 +121,8 @@ button:disabled{
 
 .jobs{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    grid-template-columns:
+        repeat(auto-fit,minmax(280px,1fr));
     gap:18px;
 }
 
@@ -150,10 +156,6 @@ button:disabled{
 .apply{
     margin-top:12px;
     width:100%;
-}
-
-.container h2{
-    margin-top:10px;
 }
 
 .info{
@@ -244,7 +246,6 @@ footer{
 
 .success{
     text-align:center;
-    padding:15px;
 }
 
 .description{
@@ -274,10 +275,10 @@ footer{
 }
 
 </style>
+
 </head>
 
 <body>
-
 
 <header>
 
@@ -286,9 +287,19 @@ footer{
     </div>
 
     <nav>
-        <a href="#jobs">Jobs</a>
-        <a href="#post">Post a Job</a>
-        <a href="#safety">Safety</a>
+
+        <a href="#jobs">
+            Jobs
+        </a>
+
+        <a href="#post">
+            Post a Job
+        </a>
+
+        <a href="#safety">
+            Safety
+        </a>
+
     </nav>
 
 </header>
@@ -301,7 +312,8 @@ footer{
     </h1>
 
     <p>
-        Connect with employers and discover job opportunities across Nigeria.
+        Connect with employers and discover
+        job opportunities across Nigeria.
     </p>
 
     <div class="search">
@@ -329,14 +341,16 @@ footer{
 
 <div class="container">
 
-
     <div class="filters">
 
         <strong>
             Filter jobs:
         </strong>
 
-        <select id="type" onchange="searchJobs()">
+        <select
+            id="type"
+            onchange="searchJobs()"
+        >
 
             <option value="">
                 All job types
@@ -361,7 +375,10 @@ footer{
         </select>
 
 
-        <select id="salary" onchange="searchJobs()">
+        <select
+            id="salary"
+            onchange="searchJobs()"
+        >
 
             <option value="">
                 Any salary
@@ -391,7 +408,10 @@ footer{
     <br>
 
 
-    <div class="jobs" id="jobList">
+    <div
+        class="jobs"
+        id="jobList"
+    >
 
         <div class="loading">
             Loading jobs...
@@ -400,7 +420,10 @@ footer{
     </div>
 
 
-    <section class="info" id="post">
+    <section
+        class="info"
+        id="post"
+    >
 
         <h2>
             Post a Job
@@ -409,8 +432,9 @@ footer{
         <br>
 
         <p>
-            Employers can use JobLink NG to advertise opportunities
-            and connect with job seekers.
+            Employers can use JobLink NG to
+            advertise opportunities and connect
+            with job seekers.
         </p>
 
         <br>
@@ -422,7 +446,10 @@ footer{
     </section>
 
 
-    <section class="info" id="safety">
+    <section
+        class="info"
+        id="safety"
+    >
 
         <h2>
             Stay Safe From Job Scams
@@ -431,9 +458,10 @@ footer{
         <br>
 
         <p>
-            Never send money to get a job. Be careful with requests
-            for passwords, PINs, bank details or unnecessary personal
-            information.
+            Never send money to get a job.
+            Be careful with requests for passwords,
+            PINs, bank details or unnecessary
+            personal information.
         </p>
 
     </section>
@@ -444,7 +472,8 @@ footer{
 <footer>
 
     <p>
-        © 2026 JobLink NG — Connecting Nigerians with opportunities.
+        © 2026 JobLink NG —
+        Connecting Nigerians with opportunities.
     </p>
 
 </footer>
@@ -470,6 +499,13 @@ window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
 );
+
+
+/* =====================================================
+   JOB DATA
+===================================================== */
+
+let allJobs = [];
 
 
 /* =====================================================
@@ -536,139 +572,6 @@ const backupJobs = [
 
 
 /* =====================================================
-   CURRENT JOBS
-===================================================== */
-
-let allJobs = [];
-
-
-/* =====================================================
-   DISPLAY JOBS
-===================================================== */
-
-function displayJobs(list){
-
-    const box =
-        document.getElementById("jobList");
-
-    if(!box){
-        return;
-    }
-
-
-    if(!list || list.length === 0){
-
-        box.innerHTML = `
-
-            <div class="no-jobs">
-
-                <h3>
-                    No jobs found
-                </h3>
-
-                <br>
-
-                <p>
-                    Try another keyword, location or filter.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-
-    box.innerHTML = list.map(function(job, index){
-
-        const title =
-            job.title ||
-            job.Title ||
-            "Job Opportunity";
-
-        const company =
-            job.company ||
-            job.Company ||
-            "Company";
-
-        const location =
-            job.location ||
-            job.Location ||
-            "Nigeria";
-
-        const type =
-            job.type ||
-            job.Type ||
-            "Full-time";
-
-        const salary =
-            Number(
-                job.salary ||
-                job.Salary ||
-                0
-            );
-
-        const description =
-            job.description ||
-            job.Description ||
-            "No job description provided.";
-
-
-        return `
-
-        <div class="job">
-
-            <h3>
-                ${escapeHTML(title)}
-            </h3>
-
-            <p>
-                <strong>Company:</strong>
-                ${escapeHTML(company)}
-            </p>
-
-            <p>
-                📍 ${escapeHTML(location)}
-            </p>
-
-            ${
-                salary > 0
-                ?
-                `
-                <p>
-                    💰 ₦${salary.toLocaleString()} / month
-                </p>
-                `
-                :
-                ""
-            }
-
-            <span class="tag">
-                ${escapeHTML(type)}
-            </span>
-
-            <p class="description">
-                ${escapeHTML(description)}
-            </p>
-
-            <button
-                class="apply"
-                onclick="applyJob(${index})"
-            >
-                View / Apply
-            </button>
-
-        </div>
-
-        `;
-
-    }).join("");
-
-}
-
-
-/* =====================================================
    ESCAPE HTML
 ===================================================== */
 
@@ -685,6 +588,129 @@ function escapeHTML(value){
 
 
 /* =====================================================
+   DISPLAY JOBS
+===================================================== */
+
+function displayJobs(list){
+
+    const box =
+        document.getElementById("jobList");
+
+    if(!box){
+        return;
+    }
+
+    if(!list || list.length === 0){
+
+        box.innerHTML = `
+
+            <div class="no-jobs">
+
+                <h3>
+                    No jobs found
+                </h3>
+
+                <br>
+
+                <p>
+                    Try another keyword,
+                    location or filter.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    box.innerHTML =
+        list.map(function(job,index){
+
+            const title =
+                job.title ||
+                "Job Opportunity";
+
+            const company =
+                job.company ||
+                "Company";
+
+            const location =
+                job.location ||
+                "Nigeria";
+
+            const type =
+                job.type ||
+                "Full-time";
+
+            const salary =
+                Number(job.salary || 0);
+
+            const description =
+                job.description ||
+                "No job description provided.";
+
+
+            return `
+
+                <div class="job">
+
+                    <h3>
+                        ${escapeHTML(title)}
+                    </h3>
+
+                    <p>
+                        <strong>
+                            Company:
+                        </strong>
+
+                        ${escapeHTML(company)}
+                    </p>
+
+                    <p>
+                        📍
+                        ${escapeHTML(location)}
+                    </p>
+
+                    ${
+                        salary > 0
+                        ?
+                        `
+                        <p>
+                            💰 ₦${salary.toLocaleString()}
+                            / month
+                        </p>
+                        `
+                        :
+                        ""
+                    }
+
+                    <span class="tag">
+                        ${escapeHTML(type)}
+                    </span>
+
+                    <p class="description">
+                        ${escapeHTML(description)}
+                    </p>
+
+                    <button
+                        class="apply"
+                        onclick="applyJob(${index})"
+                    >
+                        View / Apply
+                    </button>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =====================================================
    SEARCH JOBS
 ===================================================== */
 
@@ -696,18 +722,15 @@ function searchJobs(){
         .trim()
         .toLowerCase();
 
-
     const location =
         document.getElementById("location")
         .value
         .trim()
         .toLowerCase();
 
-
     const type =
         document.getElementById("type")
         .value;
-
 
     const salary =
         document.getElementById("salary")
@@ -718,74 +741,160 @@ function searchJobs(){
         allJobs.filter(function(job){
 
             const title =
-                String(job.title || job.Title || "")
+                String(job.title || "")
                 .toLowerCase();
 
             const company =
-                String(job.company || job.Company || "")
+                String(job.company || "")
                 .toLowerCase();
 
             const jobLocation =
-                String(job.location || job.Location || "")
+                String(job.location || "")
                 .toLowerCase();
 
             const jobType =
-                job.type || job.Type || "";
+                job.type || "";
 
             const jobSalary =
-                Number(
-                    job.salary ||
-                    job.Salary ||
-                    0
-                );
+                Number(job.salary || 0);
 
 
             const matchesKeyword =
-
                 !keyword ||
-
                 title.includes(keyword) ||
-
                 company.includes(keyword);
 
 
             const matchesLocation =
-
                 !location ||
-
                 jobLocation.includes(location);
 
 
             const matchesType =
-
                 !type ||
-
                 jobType === type;
 
 
             const matchesSalary =
-
                 !salary ||
-
                 jobSalary >= Number(salary);
 
 
             return(
-
                 matchesKeyword &&
-
                 matchesLocation &&
-
                 matchesType &&
-
                 matchesSalary
-
             );
 
         });
 
 
     displayJobs(results);
+
+}
+
+
+/* =====================================================
+   LOAD JOBS
+===================================================== */
+
+async function loadJobsFromSupabase(){
+
+    const box =
+        document.getElementById("jobList");
+
+
+    box.innerHTML = `
+
+        <div class="loading">
+            Loading jobs...
+        </div>
+
+    `;
+
+
+    try{
+
+        const result =
+            await supabaseClient
+                .from("Jobs")
+                .select(
+                    "id,title,company,location,type,salary,description,created_at"
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending:false
+                    }
+                );
+
+
+        console.log(
+            "SUPABASE JOB DATA:",
+            result.data
+        );
+
+
+        console.log(
+            "SUPABASE JOB ERROR:",
+            result.error
+        );
+
+
+        if(result.error){
+
+            console.error(
+                "Could not load jobs:",
+                result.error
+            );
+
+
+            allJobs =
+                [...backupJobs];
+
+
+            displayJobs(allJobs);
+
+            return;
+
+        }
+
+
+        if(
+            result.data &&
+            result.data.length > 0
+        ){
+
+            allJobs =
+                result.data;
+
+        }else{
+
+            allJobs =
+                [...backupJobs];
+
+        }
+
+
+        displayJobs(allJobs);
+
+
+    }catch(error){
+
+        console.error(
+            "JOB LOADING ERROR:",
+            error
+        );
+
+
+        allJobs =
+            [...backupJobs];
+
+
+        displayJobs(allJobs);
+
+    }
 
 }
 
@@ -799,6 +908,7 @@ function applyJob(index){
     const job =
         allJobs[index];
 
+
     if(!job){
         return;
     }
@@ -806,14 +916,15 @@ function applyJob(index){
 
     const title =
         job.title ||
-        job.Title ||
         "Job Opportunity";
 
 
     const modal =
         document.createElement("div");
 
-    modal.className = "modal";
+
+    modal.className =
+        "modal";
 
 
     modal.innerHTML = `
@@ -878,7 +989,9 @@ function applyJob(index){
                 class="status"
             ></div>
 
-            <button id="submitApplication">
+            <button
+                id="submitApplication"
+            >
                 Submit Application
             </button>
 
@@ -908,58 +1021,315 @@ function applyJob(index){
 
     document.getElementById(
         "submitApplication"
+    ).onclick =
+        async function(){
+
+            const submitButton =
+                document.getElementById(
+                    "submitApplication"
+                );
+
+
+            const status =
+                document.getElementById(
+                    "uploadStatus"
+                );
+
+
+            const name =
+                document.getElementById(
+                    "appName"
+                ).value.trim();
+
+
+            const email =
+                document.getElementById(
+                    "appEmail"
+                ).value.trim();
+
+
+            const phone =
+                document.getElementById(
+                    "appPhone"
+                ).value.trim();
+
+
+            const location =
+                document.getElementById(
+                    "appLocation"
+                ).value.trim();
+
+
+            const cv =
+                document.getElementById(
+                    "cvFile"
+                ).files[0];
+
+
+            if(
+                !name ||
+                !email ||
+                !phone ||
+                !location
+            ){
+
+                alert(
+                    "Please complete all your details."
+                );
+
+                return;
+
+            }
+
+
+            if(!email.includes("@")){
+
+                alert(
+                    "Please enter a valid email address."
+                );
+
+                return;
+
+            }
+
+
+            if(!cv){
+
+                alert(
+                    "Please select your CV first."
+                );
+
+                return;
+
+            }
+
+
+            const extension =
+                cv.name
+                    .split(".")
+                    .pop()
+                    .toLowerCase();
+
+
+            if(
+                !["pdf","doc","docx"]
+                .includes(extension)
+            ){
+
+                alert(
+                    "Please upload a PDF, DOC or DOCX file."
+                );
+
+                return;
+
+            }
+
+
+            if(
+                cv.size >
+                5 * 1024 * 1024
+            ){
+
+                alert(
+                    "Your CV is too large. Maximum size is 5MB."
+                );
+
+                return;
+
+            }
+
+
+            submitButton.disabled =
+                true;
+
+
+            submitButton.innerText =
+                "Uploading CV...";
+
+
+            status.innerText =
+                "Uploading your CV...";
+
+
+            const safeFileName =
+                cv.name.replace(
+                    /[^a-zA-Z0-9._-]/g,
+                    "_"
+                );
+
+
+            const fileName =
+                Date.now() +
+                "_" +
+                safeFileName;
+    <script>
+
+/* =====================================================
+   POST A JOB
+===================================================== */
+
+function postJob(){
+
+    const modal =
+        document.createElement("div");
+
+    modal.className = "modal";
+
+    modal.innerHTML = `
+
+        <div class="modal-box">
+
+            <h2>Post a Job</h2>
+
+            <br>
+
+            <input
+                id="jobTitle"
+                type="text"
+                placeholder="Job title"
+            >
+
+            <input
+                id="jobCompany"
+                type="text"
+                placeholder="Company name"
+            >
+
+            <input
+                id="jobLocation"
+                type="text"
+                placeholder="Location"
+            >
+
+            <select id="jobType">
+
+                <option value="">
+                    Select job type
+                </option>
+
+                <option value="Full-time">
+                    Full-time
+                </option>
+
+                <option value="Part-time">
+                    Part-time
+                </option>
+
+                <option value="Remote">
+                    Remote
+                </option>
+
+                <option value="Contract">
+                    Contract
+                </option>
+
+            </select>
+
+            <input
+                id="jobSalary"
+                type="number"
+                placeholder="Monthly salary in ₦"
+            >
+
+            <textarea
+                id="jobDescription"
+                placeholder="Job description"
+            ></textarea>
+
+            <div
+                id="jobStatus"
+                class="status"
+            ></div>
+
+            <button id="submitJob">
+                Publish Job
+            </button>
+
+            <button
+                id="cancelJob"
+                class="cancel"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(modal);
+
+
+    document.getElementById(
+        "cancelJob"
+    ).onclick = function(){
+
+        modal.remove();
+
+    };
+
+
+    document.getElementById(
+        "submitJob"
     ).onclick = async function(){
 
-        const submitButton =
+        const button =
             document.getElementById(
-                "submitApplication"
+                "submitJob"
             );
 
         const status =
             document.getElementById(
-                "uploadStatus"
+                "jobStatus"
             );
 
 
-        const name =
+        const title =
             document.getElementById(
-                "appName"
+                "jobTitle"
             ).value.trim();
 
 
-        const email =
+        const company =
             document.getElementById(
-                "appEmail"
-            ).value.trim();
-
-
-        const phone =
-            document.getElementById(
-                "appPhone"
+                "jobCompany"
             ).value.trim();
 
 
         const location =
             document.getElementById(
-                "appLocation"
+                "jobLocation"
             ).value.trim();
 
 
-        const cv =
+        const type =
             document.getElementById(
-                "cvFile"
-            ).files[0];
+                "jobType"
+            ).value;
+
+
+        const salary =
+            document.getElementById(
+                "jobSalary"
+            ).value;
+
+
+        const description =
+            document.getElementById(
+                "jobDescription"
+            ).value.trim();
 
 
         if(
-            !name ||
-            !email ||
-            !phone ||
-            !location
+            !title ||
+            !company ||
+            !location ||
+            !type ||
+            !salary ||
+            !description
         ){
 
             alert(
-                "Please complete all your details."
+                "Please complete all job details."
             );
 
             return;
@@ -967,172 +1337,84 @@ function applyJob(index){
         }
 
 
-        if(!email.includes("@")){
+        button.disabled = true;
 
-            alert(
-                "Please enter a valid email address."
-            );
-
-            return;
-
-        }
-
-
-        if(!cv){
-
-            alert(
-                "Please select your CV first."
-            );
-
-            return;
-
-        }
-
-
-        const extension =
-            cv.name
-            .split(".")
-            .pop()
-            .toLowerCase();
-
-
-        if(
-            !["pdf","doc","docx"]
-            .includes(extension)
-        ){
-
-            alert(
-                "Please upload a PDF, DOC or DOCX file."
-            );
-
-            return;
-
-        }
-
-
-        if(
-            cv.size >
-            5 * 1024 * 1024
-        ){
-
-            alert(
-                "Your CV is too large. Maximum size is 5MB."
-            );
-
-            return;
-
-        }
-
-
-        submitButton.disabled = true;
-
-        submitButton.innerText =
-            "Uploading CV...";
+        button.innerText =
+            "Publishing...";
 
         status.innerText =
-            "Uploading your CV...";
-
-
-        const safeFileName =
-            cv.name.replace(
-                /[^a-zA-Z0-9._-]/g,
-                "_"
-            );
-
-
-        const fileName =
-            Date.now() +
-            "_" +
-            safeFileName;
+            "Publishing your job...";
 
 
         try{
 
-            /* UPLOAD CV */
-
-            const uploadResult =
+            const result =
                 await supabaseClient
-                    .storage
-                    .from("cvs")
-                    .upload(
-                        fileName,
-                        cv,
-                        {
-                            cacheControl:"3600",
-                            upsert:false
-                        }
-                    );
-
-
-            if(uploadResult.error){
-
-                throw new Error(
-                    "CV upload failed: " +
-                    uploadResult.error.message
-                );
-
-            }
-
-
-            status.innerText =
-                "CV uploaded. Saving application...";
-
-
-            submitButton.innerText =
-                "Saving Application...";
-
-
-            /* SAVE APPLICATION */
-
-            const applicationResult =
-                await supabaseClient
-                    .from("Cvs")
+                    .from("Jobs")
                     .insert([
                         {
-                            Name:name,
-                            Email:email,
-                            Phone:phone,
-                            Location:location,
-                            Cv_name:cv.name,
-                            "Job title":title,
-                            "CV path":fileName
+                            title:title,
+                            company:company,
+                            location:location,
+                            type:type,
+                            salary:Number(salary),
+                            description:description
                         }
-                    ]);
+                    ])
+                    .select();
 
 
-            if(applicationResult.error){
+            console.log(
+                "POST JOB RESULT:",
+                result
+            );
 
-                throw new Error(
-                    "Application could not be saved: " +
-                    applicationResult.error.message
+
+            if(result.error){
+
+                console.error(
+                    "POST JOB ERROR:",
+                    result.error
                 );
+
+                alert(
+                    "Could not publish job: " +
+                    result.error.message
+                );
+
+                button.disabled = false;
+
+                button.innerText =
+                    "Publish Job";
+
+                status.innerText = "";
+
+                return;
 
             }
 
-
-            /* SUCCESS */
 
             modal.innerHTML = `
 
                 <div class="modal-box success">
 
                     <h2>
-                        Application Submitted!
+                        Job Published!
                     </h2>
 
                     <br>
 
                     <p>
-                        Your application for
-                        <strong>
-                            ${escapeHTML(title)}
-                        </strong>
-                        has been submitted successfully.
+                        Your job has been
+                        successfully published
+                        on JobLink NG.
                     </p>
 
                     <br>
 
-                    <button id="closeSuccess">
+                    <button
+                        id="closeJobSuccess"
+                    >
                         Done
                     </button>
 
@@ -1142,5 +1424,96 @@ function applyJob(index){
 
 
             document.getElementById(
-                "closeSuccess"
-            ).onclick = fun
+                "closeJobSuccess"
+            ).onclick = function(){
+
+                modal.remove();
+
+                loadJobsFromSupabase();
+
+            };
+
+
+        }catch(error){
+
+            console.error(
+                "POST JOB EXCEPTION:",
+                error
+            );
+
+            alert(
+                "Something went wrong: " +
+                error.message
+            );
+
+            button.disabled = false;
+
+            button.innerText =
+                "Publish Job";
+
+            status.innerText = "";
+
+        }
+
+    };
+
+}
+
+
+/* =====================================================
+   START WEBSITE
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        console.log(
+            "JobLink NG started"
+        );
+
+        loadJobsFromSupabase();
+
+    }
+);
+
+
+/* =====================================================
+   ENTER KEY SEARCH
+===================================================== */
+
+document.getElementById(
+    "keyword"
+).addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key === "Enter"){
+
+            searchJobs();
+
+        }
+
+    }
+);
+
+
+document.getElementById(
+    "location"
+).addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key === "Enter"){
+
+            searchJobs();
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
