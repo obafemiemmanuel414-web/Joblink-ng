@@ -907,8 +907,428 @@ function applyJob(title){
 
         }
 
+<script>
 
-        if(!cv){
+/* =========================
+   SUPABASE CONNECTION
+========================= */
+
+const SUPABASE_URL =
+"https://eqxdoonyghqpykemhqde.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"sb_publishable_cgYERMnBcyshrtTcHpscvw_tgxBUc07";
+
+let supabaseClient = null;
+
+try {
+
+    if (
+        window.supabase &&
+        typeof window.supabase.createClient === "function"
+    ) {
+
+        supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_ANON_KEY
+            );
+
+    }
+
+} catch (error) {
+
+    console.error(
+        "Supabase connection unavailable:",
+        error
+    );
+
+}
+
+
+/* =========================
+   JOB LIST
+========================= */
+
+const jobs = [
+
+    {
+        title:"Security Officer",
+        company:"Private Company",
+        location:"Lagos",
+        type:"Full-time",
+        salary:120000
+    },
+
+    {
+        title:"Customer Service Representative",
+        company:"Lagos Business",
+        location:"Lagos",
+        type:"Full-time",
+        salary:180000
+    },
+
+    {
+        title:"Social Media Assistant",
+        company:"Digital Agency",
+        location:"Remote",
+        type:"Remote",
+        salary:150000
+    },
+
+    {
+        title:"Sales Representative",
+        company:"Retail Company",
+        location:"Lekki, Lagos",
+        type:"Part-time",
+        salary:100000
+    },
+
+    {
+        title:"Graphic Designer",
+        company:"Creative Studio",
+        location:"Remote",
+        type:"Contract",
+        salary:200000
+    },
+
+    {
+        title:"Office Assistant",
+        company:"Business Services",
+        location:"Victoria Island, Lagos",
+        type:"Full-time",
+        salary:140000
+    }
+
+];
+
+
+/* =========================
+   DISPLAY JOBS
+========================= */
+
+function displayJobs(list) {
+
+    const box =
+        document.getElementById("jobList");
+
+    if (!box) {
+        return;
+    }
+
+    if (!list || list.length === 0) {
+
+        box.innerHTML = `
+            <div class="no-jobs">
+                <h3>No jobs found</h3>
+                <br>
+                <p>
+                    Try another keyword, location or filter.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    box.innerHTML = list.map(function(job) {
+
+        return `
+
+        <div class="job">
+
+            <h3>
+                ${job.title}
+            </h3>
+
+            <p>
+                <strong>Company:</strong>
+                ${job.company}
+            </p>
+
+            <p>
+                📍 ${job.location}
+            </p>
+
+            <p>
+                💰 ₦${Number(job.salary).toLocaleString()} / month
+            </p>
+
+            <span class="tag">
+                ${job.type}
+            </span>
+
+            <button
+                class="apply"
+                onclick="applyJob('${escapeQuotes(job.title)}')"
+            >
+                View / Apply
+            </button>
+
+        </div>
+
+        `;
+
+    }).join("");
+
+}
+
+
+/* =========================
+   SEARCH JOBS
+========================= */
+
+function searchJobs() {
+
+    const keyword =
+        document.getElementById("keyword")
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    const location =
+        document.getElementById("location")
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    const type =
+        document.getElementById("type")
+        .value;
+
+
+    const salary =
+        document.getElementById("salary")
+        .value;
+
+
+    const results =
+        jobs.filter(function(job) {
+
+            const matchesKeyword =
+
+                !keyword ||
+
+                job.title
+                .toLowerCase()
+                .includes(keyword)
+
+                ||
+
+                job.company
+                .toLowerCase()
+                .includes(keyword);
+
+
+            const matchesLocation =
+
+                !location ||
+
+                job.location
+                .toLowerCase()
+                .includes(location);
+
+
+            const matchesType =
+
+                !type ||
+                job.type === type;
+
+
+            const matchesSalary =
+
+                !salary ||
+                Number(job.salary) >= Number(salary);
+
+
+            return (
+                matchesKeyword &&
+                matchesLocation &&
+                matchesType &&
+                matchesSalary
+            );
+
+        });
+
+
+    displayJobs(results);
+
+}
+
+
+/* =========================
+   ESCAPE QUOTES
+========================= */
+
+function escapeQuotes(text) {
+
+    return text
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'");
+
+}
+
+
+/* =========================
+   APPLY FOR JOB
+========================= */
+
+function applyJob(title) {
+
+    const modal =
+        document.createElement("div");
+
+    modal.className = "modal";
+
+
+    modal.innerHTML = `
+
+        <div class="modal-box">
+
+            <h2>
+                Apply for Job
+            </h2>
+
+            <br>
+
+            <p>
+                Applying for:
+                <strong>${title}</strong>
+            </p>
+
+            <br>
+
+            <input
+                id="appName"
+                type="text"
+                placeholder="Full name"
+            >
+
+            <input
+                id="appEmail"
+                type="email"
+                placeholder="Email address"
+            >
+
+            <input
+                id="appPhone"
+                type="tel"
+                placeholder="Phone number"
+            >
+
+            <input
+                id="appLocation"
+                type="text"
+                placeholder="Your location"
+            >
+
+            <label>
+                Upload CV
+            </label>
+
+            <br><br>
+
+            <input
+                id="cvFile"
+                type="file"
+                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            >
+
+            <button
+                id="submitApplication"
+            >
+                Submit Application
+            </button>
+
+            <button
+                class="cancel"
+                id="cancelApplication"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(modal);
+
+
+    /* =========================
+       CANCEL
+    ========================= */
+
+    document.getElementById(
+        "cancelApplication"
+    ).onclick = function() {
+
+        modal.remove();
+
+    };
+
+
+    /* =========================
+       SUBMIT APPLICATION
+    ========================= */
+
+    document.getElementById(
+        "submitApplication"
+    ).onclick = async function() {
+
+        const name =
+            document.getElementById("appName")
+            .value
+            .trim();
+
+
+        const email =
+            document.getElementById("appEmail")
+            .value
+            .trim();
+
+
+        const phone =
+            document.getElementById("appPhone")
+            .value
+            .trim();
+
+
+        const location =
+            document.getElementById("appLocation")
+            .value
+            .trim();
+
+
+        const cv =
+            document.getElementById("cvFile")
+            .files[0];
+
+
+        /* CHECK DETAILS */
+
+        if (
+            !name ||
+            !email ||
+            !phone ||
+            !location
+        ) {
+
+            alert(
+                "Please complete all your details."
+            );
+
+            return;
+
+        }
+
+
+        /* CHECK CV */
+
+        if (!cv) {
 
             alert(
                 "Please select your CV first."
@@ -919,12 +1339,30 @@ function applyJob(title){
         }
 
 
-        /* Check Supabase */
+        /* CHECK FILE TYPE */
 
-        if(!supabaseClient){
+        const fileExtension =
+            cv.name
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+
+        const allowedExtensions = [
+            "pdf",
+            "doc",
+            "docx"
+        ];
+
+
+        if (
+            !allowedExtensions.includes(
+                fileExtension
+            )
+        ) {
 
             alert(
-                "The application service is currently unavailable. Please try again later."
+                "Please upload a PDF, DOC or DOCX file."
             );
 
             return;
@@ -932,62 +1370,135 @@ function applyJob(title){
         }
 
 
+        /* CHECK FILE SIZE */
+
+        if (
+            cv.size >
+            5 * 1024 * 1024
+        ) {
+
+            alert(
+                "Your CV is too large. Maximum size is 5MB."
+            );
+
+            return;
+
+        }
+
+
+        /* CHECK SUPABASE */
+
+        if (!supabaseClient) {
+
+            alert(
+                "The application service is currently unavailable."
+            );
+
+            return;
+
+        }
+
+
+        /* CREATE SAFE FILE NAME */
+
+        const safeFileName =
+            cv.name.replace(
+                /[^a-zA-Z0-9._-]/g,
+                "_"
+            );
+
+
         const fileName =
-        Date.now() + "_" + cv.name;
+            Date.now() +
+            "_" +
+            safeFileName;
 
 
-        try{
+        try {
+
+            /* =========================
+               UPLOAD CV
+            ========================= */
 
             const uploadResult =
-            await supabaseClient
-            .storage
-            .from("cvs")
-            .upload(fileName,cv);
+                await supabaseClient
+                .storage
+                .from("cvs")
+                .upload(
+                    fileName,
+                    cv,
+                    {
+                        cacheControl: "3600",
+                        upsert: false
+                    }
+                );
 
 
-            
+            /* CHECK UPLOAD */
 
-            const applicationResult =
-            await supabaseClient
-            .from("applications")
-            .insert([{
-
-                name:name,
-                email:email,
-                phone:phone,
-                location:location,
-                job_title:title,
-                cv_name:cv.name,
-                cv_path:fileName
-
-            }]);
-if(uploadResult.error){
-
-    console.error("CV Upload Error:", uploadResult.error);
-
-    alert(
-        "CV upload failed:\n\n" +
-        uploadResult.error.message
-    );
-
-    return;
-
-    }
-
-            if(applicationResult.error){
+            if (uploadResult.error) {
 
                 console.error(
-                    applicationResult.error
+                    "CV Upload Error:",
+                    uploadResult.error
                 );
 
                 alert(
-                    "Application could not be submitted."
+                    "CV upload failed:\n\n" +
+                    uploadResult.error.message
                 );
 
                 return;
 
             }
 
+
+            console.log(
+                "CV uploaded successfully:",
+                fileName
+            );
+
+
+            /* =========================
+               SAVE APPLICATION
+            ========================= */
+
+            const applicationResult =
+                await supabaseClient
+                .from("applications")
+                .insert([{
+
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    location: location,
+                    job_title: title,
+                    cv_name: cv.name,
+                    cv_path: fileName
+
+                }]);
+
+
+            /* CHECK APPLICATION */
+
+            if (applicationResult.error) {
+
+                console.error(
+                    "Application Error:",
+                    applicationResult.error
+                );
+
+                alert(
+                    "CV uploaded, but the application could not be saved:\n\n" +
+                    applicationResult.error.message
+                );
+
+                return;
+
+            }
+
+
+            /* SUCCESS */
 
             alert(
                 "Application submitted successfully!"
@@ -997,12 +1508,16 @@ if(uploadResult.error){
             modal.remove();
 
 
-        }catch(error){
+        } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Unexpected Error:",
+                error
+            );
 
             alert(
-                "Something went wrong. Please try again."
+                "Something went wrong:\n\n" +
+                error.message
             );
 
         }
@@ -1018,7 +1533,7 @@ if(uploadResult.error){
 
 document.addEventListener(
     "DOMContentLoaded",
-    function(){
+    function() {
 
         displayJobs(jobs);
 
