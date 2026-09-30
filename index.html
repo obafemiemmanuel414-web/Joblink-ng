@@ -821,7 +821,104 @@ function applyJob(title){
                 "CV uploaded. Saving application...";
 
             submitButton.innerText =
-                "Saving Application...";
+               <footer>
+    ...
+</footer>
+
+<script>
+
+const SUPABASE_URL =
+"https://eqxdoonyghqpykemhqde.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"YOUR_EXISTING_KEY";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+
+/* =====================================================
+   APPLY FOR JOB
+===================================================== */
+
+async function applyJob(title){
+
+    const name = prompt("Enter your full name:");
+    if(!name) return;
+
+    const email = prompt("Enter your email:");
+    if(!email) return;
+
+    const phone = prompt("Enter your phone number:");
+    if(!phone) return;
+
+    const location = prompt("Enter your location:");
+    if(!location) return;
+
+
+    const cvInput = document.createElement("input");
+
+    cvInput.type = "file";
+    cvInput.accept = ".pdf,.doc,.docx";
+
+    document.body.appendChild(cvInput);
+
+    cvInput.click();
+
+
+    cvInput.onchange = async function(){
+
+        const cv = cvInput.files[0];
+
+        if(!cv){
+
+            alert("Please select your CV.");
+
+            cvInput.remove();
+
+            return;
+        }
+
+
+        alert("Uploading CV...");
+
+
+        try{
+
+            const fileName =
+                Date.now() + "_" + cv.name;
+
+
+            /* UPLOAD CV */
+
+            const uploadResult =
+                await supabaseClient
+                .storage
+                .from("cvs")
+                .upload(
+                    fileName,
+                    cv,
+                    {
+                        cacheControl:"3600",
+                        upsert:false
+                    }
+                );
+
+
+            if(uploadResult.error){
+
+                alert(
+                    "CV upload failed:\n\n" +
+                    uploadResult.error.message
+                );
+
+                cvInput.remove();
+
+                return;
+            }
 
 
             /* SAVE APPLICANT */
@@ -849,9 +946,7 @@ function applyJob(title){
                     applicationResult.error.message
                 );
 
-                submitButton.disabled = false;
-                submitButton.innerText =
-                    "Submit Application";
+                cvInput.remove();
 
                 return;
             }
@@ -861,21 +956,20 @@ function applyJob(title){
                 "Application submitted successfully!"
             );
 
-            modal.remove();
+            cvInput.remove();
 
-        }catch(error){
+        }
+        catch(error){
 
             alert(
                 "Something went wrong:\n\n" +
                 error.message
             );
 
-            submitButton.disabled = false;
-            submitButton.innerText =
-                "Submit Application";
+            cvInput.remove();
         }
     };
-                    }
+}
 
 
 /* =====================================================
