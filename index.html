@@ -412,51 +412,66 @@ let jobs = [];
 
 /* LOAD JOBS */
 
-async function loadJobs(){
+function loadJobs(){
 
-const box =
-document.getElementById("jobList");
+    jobs = [
+        {
+            title: "Security Officer",
+            company: "Private Company",
+            location: "Lagos",
+            type: "Full-time",
+            salary: 120000,
+            description: "Security job opportunity in Lagos."
+        },
 
-box.innerHTML =
-'<div class="loading">Loading jobs...</div>';
+        {
+            title: "Customer Service Representative",
+            company: "Lagos Business",
+            location: "Lagos",
+            type: "Full-time",
+            salary: 180000,
+            description: "Customer service opportunity in Lagos."
+        },
 
-try{
+        {
+            title: "Social Media Assistant",
+            company: "Digital Agency",
+            location: "Remote",
+            type: "Remote",
+            salary: 150000,
+            description: "Remote social media opportunity."
+        },
 
-const result =
-await supabaseClient
-.from("jobs")
-.select("*")
-.order("created_at",{ascending:false});
+        {
+            title: "Sales Representative",
+            company: "Retail Company",
+            location: "Lekki, Lagos",
+            type: "Part-time",
+            salary: 100000,
+            description: "Sales opportunity in Lekki."
+        },
 
+        {
+            title: "Graphic Designer",
+            company: "Creative Studio",
+            location: "Remote",
+            type: "Contract",
+            salary: 200000,
+            description: "Graphic design opportunity."
+        },
 
-if(result.error){
+        {
+            title: "Office Assistant",
+            company: "Business Services",
+            location: "Victoria Island, Lagos",
+            type: "Full-time",
+            salary: 140000,
+            description: "Office assistant opportunity."
+        }
+    ];
 
-console.error(result.error);
-
-box.innerHTML =
-'<div class="no-jobs"><h3>Unable to load jobs</h3><p>Please try again.</p></div>';
-
-return;
-
-}
-
-
-jobs = result.data || [];
-
-displayJobs(jobs);
-
-}catch(error){
-
-console.error(error);
-
-box.innerHTML =
-'<div class="no-jobs"><h3>Unable to load jobs</h3><p>Please refresh the page.</p></div>';
-
-}
-
-}
-
-
+    displayJobs(jobs);
+   }
 /* DISPLAY JOBS */
 
 function displayJobs(list){
