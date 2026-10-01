@@ -1245,7 +1245,166 @@ function applyJob(index){
         button.disabled = true;
 
         button.innerText =
-            "Submitting...";
+/* =====================================================
+   APPLY FOR JOB
+===================================================== */
+
+function applyJob(index){
+
+    const job = allJobs[index];
+
+    if(!job){
+
+        alert(
+            "Job information could not be found."
+        );
+
+        return;
+
+    }
+
+
+    const modal =
+        document.createElement("div");
+
+    modal.className = "modal";
+
+
+    modal.innerHTML = `
+
+        <div class="modal-box">
+
+            <h2>
+                Apply for Job
+            </h2>
+
+            <br>
+
+            <p>
+                <strong>Job:</strong>
+                ${safe(job.title)}
+            </p>
+
+            <p>
+                <strong>Company:</strong>
+                ${safe(job.company)}
+            </p>
+
+            <br>
+
+            <input
+                id="applicantName"
+                type="text"
+                placeholder="Full name"
+            >
+
+            <input
+                id="applicantEmail"
+                type="email"
+                placeholder="Email address"
+            >
+
+            <input
+                id="applicantPhone"
+                type="tel"
+                placeholder="Phone number"
+            >
+
+            <label>
+                Upload CV
+            </label>
+
+            <input
+                id="applicantCV"
+                type="file"
+                accept=".pdf,.doc,.docx"
+            >
+
+            <button id="submitApplication">
+                Submit Application
+            </button>
+
+            <button
+                id="cancelApplication"
+                class="cancel"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(modal);
+
+
+    /* CANCEL */
+
+    document.getElementById(
+        "cancelApplication"
+    ).onclick = function(){
+
+        modal.remove();
+
+    };
+
+
+    /* SUBMIT APPLICATION */
+
+    document.getElementById(
+        "submitApplication"
+    ).onclick = async function(){
+
+        const name =
+            document.getElementById(
+                "applicantName"
+            ).value.trim();
+
+        const email =
+            document.getElementById(
+                "applicantEmail"
+            ).value.trim();
+
+        const phone =
+            document.getElementById(
+                "applicantPhone"
+            ).value.trim();
+
+        const cv =
+            document.getElementById(
+                "applicantCV"
+            ).files[0];
+
+
+        /* VALIDATION */
+
+        if(
+            !name ||
+            !email ||
+            !phone ||
+            !cv
+        ){
+
+            alert(
+                "Please fill in all fields and upload your CV."
+            );
+
+            return;
+
+        }
+
+
+        const button =
+            document.getElementById(
+                "submitApplication"
+            );
+
+
+        button.disabled = true;
+
+        button.innerText =
+            "Uploading CV...";
 
 
         /* =================================================
@@ -1287,10 +1446,15 @@ function applyJob(index){
                 );
 
 
+        console.log(
+            "CV upload result:",
+            uploadResult
+        );
+
+
         if(uploadResult.error){
 
             console.error(
-                "CV upload error:",
                 uploadResult.error
             );
 
@@ -1313,25 +1477,34 @@ function applyJob(index){
            SAVE APPLICATION
         ================================================= */
 
+        button.innerText =
+            "Saving Application...";
+
+
         const applicationResult =
             await db
                 .from("job_applications")
                 .insert([
                     {
-                        job_id: job.id,
-                        applicant_name: name,
-                        applicant_email: email,
-                        phone: phone,
-                        cv_url: filePath,
-                        status: "pending"
+                        job_id:job.id,
+                        applicant_name:name,
+                        applicant_email:email,
+                        phone:phone,
+                        cv_url:filePath,
+                        status:"pending"
                     }
                 ]);
+
+
+        console.log(
+            "Application result:",
+            applicationResult
+        );
 
 
         if(applicationResult.error){
 
             console.error(
-                "Application error:",
                 applicationResult.error
             );
 
@@ -1390,7 +1563,7 @@ function applyJob(index){
 
     };
 
-            }
+    }
 
 /* START */
 
