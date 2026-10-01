@@ -2491,6 +2491,18 @@ document.addEventListener(
     }
 );
 
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./sw.js")
+            .then(function () {
+                console.log("JobLink NG app service worker registered");
+            })
+            .catch(function (error) {
+                console.log("Service worker registration failed:", error);
+            });
+    });
+}
 </script>
 
 </body>
