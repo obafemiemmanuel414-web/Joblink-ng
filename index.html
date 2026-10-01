@@ -1485,9 +1485,9 @@ function applyJob(jobId){
 
 
                 alert(
-                    "Application not saved: " +
-                    error.message
-                );
+    "Application not saved:\n\n" +
+    JSON.stringify(error, null, 2)
+);
 
 
                 button.disabled =
