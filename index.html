@@ -940,15 +940,145 @@ function submitApplication(event){
 
         "Phone": phone,
 
-        "Location": location,
+function submitApplication(event){
 
-        "Cv_name": cvFile.name,
+    event.preventDefault();
 
-        "Job title": selectedJobTitle,
+    const form =
+        document.getElementById("applicationForm");
 
-        "CV path": filePath
+    const status =
+        document.getElementById("applicationStatus");
 
-    }]);
+    const button =
+        form.querySelector("button[type='submit']");
+
+    const name =
+        document.getElementById("appName").value.trim();
+
+    const email =
+        document.getElementById("appEmail").value.trim();
+
+    const phone =
+        document.getElementById("appPhone").value.trim();
+
+    const locationInput =
+        document.getElementById("appLocation");
+
+    const location =
+        locationInput.value.trim();
+
+    const cvFile =
+        document.getElementById("appCV").files[0];
+
+
+    if(
+        !name ||
+        !email ||
+        !phone ||
+        !location ||
+        !cvFile
+    ){
+
+        status.innerText =
+            "Please fill in all fields and upload your CV.";
+
+        return;
+    }
+
+
+    if(cvFile.size > 5 * 1024 * 1024){
+
+        status.innerText =
+            "CV must be less than 5MB.";
+
+        return;
+    }
+
+
+    const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ];
+
+
+    if(!allowedTypes.includes(cvFile.type)){
+
+        status.innerText =
+            "Please upload a PDF, DOC or DOCX CV.";
+
+        return;
+    }
+
+
+    button.disabled = true;
+    button.innerText = "Submitting...";
+    status.innerText = "Uploading your CV...";
+
+
+    (async function(){
+
+        try{
+
+            const safeFileName =
+                cvFile.name.replace(
+                    /[^a-zA-Z0-9._-]/g,
+                    "_"
+                );
+
+
+            const filePath =
+                Date.now() +
+                "_" +
+                Math.random()
+                .toString(36)
+                .substring(2,8) +
+                "_" +
+                safeFileName;
+
+
+            const uploadResult =
+                await supabaseClient
+                .storage
+                .from("cvs")
+                .upload(filePath, cvFile);
+
+
+            if(uploadResult.error){
+
+                throw new Error(
+                    "CV upload failed: " +
+                    uploadResult.error.message
+                );
+
+            }
+
+
+            status.innerText =
+                "Saving application...";
+
+
+            const applicationResult =
+                await supabaseClient
+                .from("Cvs")
+                .insert([{
+
+                    "Name": name,
+
+                    "Email": email,
+
+                    "Phone": phone,
+
+                    "Location": location,
+
+                    "Cv_name": cvFile.name,
+
+                    "Job title": selectedJobTitle,
+
+                    "CV path": filePath
+
+                }]);
 
 
             if(applicationResult.error){
@@ -995,7 +1125,6 @@ function submitApplication(event){
     })();
 
 }
-
 
 /* =========================
    POST JOB
