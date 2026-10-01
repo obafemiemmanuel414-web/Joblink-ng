@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>JobLink NG</title>
@@ -80,6 +83,11 @@ button{
     cursor:pointer;
 }
 
+button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
 .container{
     max-width:1100px;
     margin:30px auto;
@@ -102,8 +110,10 @@ button{
 
 .jobs{
     display:grid;
-    grid-template-columns:
-    repeat(auto-fit,minmax(280px,1fr));
+    grid-template-columns:repeat(
+        auto-fit,
+        minmax(280px,1fr)
+    );
     gap:18px;
 }
 
@@ -159,6 +169,15 @@ button{
     grid-column:1/-1;
 }
 
+.error-box{
+    background:#fff3f3;
+    color:#a40000;
+    padding:25px;
+    text-align:center;
+    grid-column:1/-1;
+    border-radius:10px;
+}
+
 .modal{
     position:fixed;
     inset:0;
@@ -192,6 +211,13 @@ button{
 
 .modal-box textarea{
     height:120px;
+    resize:vertical;
+}
+
+.modal-box label{
+    display:block;
+    font-weight:bold;
+    margin-top:5px;
 }
 
 .modal-box button{
@@ -215,6 +241,12 @@ footer{
     color:white;
 }
 
+.small-text{
+    font-size:13px;
+    color:#666;
+    margin-top:5px;
+}
+
 @media(max-width:600px){
 
     nav{
@@ -232,189 +264,200 @@ footer{
 }
 
 </style>
+
 </head>
 
 <body>
 
 <header>
 
-<div class="logo">
-JobLink NG
-</div>
+    <div class="logo">
+        JobLink NG
+    </div>
 
-<nav>
-<a href="#jobs">Jobs</a>
-<a href="#post">Post a Job</a>
-<a href="#safety">Safety</a>
-</nav>
+    <nav>
+
+        <a href="#jobs">
+            Jobs
+        </a>
+
+        <a href="#post">
+            Post a Job
+        </a>
+
+        <a href="#safety">
+            Safety
+        </a>
+
+    </nav>
 
 </header>
 
 
 <section class="hero">
 
-<h1>
-Find Your Next Job
-</h1>
+    <h1>
+        Find Your Next Job
+    </h1>
 
-<p>
-Find jobs and connect with employers across Nigeria.
-</p>
+    <p>
+        Find jobs and connect with employers across Nigeria.
+    </p>
 
-<div class="search">
+    <div class="search">
 
-<input
-id="keyword"
-type="text"
-placeholder="Job title or keyword"
->
+        <input
+            id="keyword"
+            type="text"
+            placeholder="Job title or keyword"
+        >
 
-<input
-id="location"
-type="text"
-placeholder="Location"
->
+        <input
+            id="location"
+            type="text"
+            placeholder="Location"
+        >
 
-<button onclick="searchJobs()">
-Search
-</button>
+        <button onclick="searchJobs()">
+            Search
+        </button>
 
-</div>
+    </div>
 
 </section>
 
 
 <div class="container">
 
-<div class="filters">
+    <div class="filters">
 
-<strong>
-Filter:
-</strong>
+        <strong>
+            Filter:
+        </strong>
 
-<select
-id="type"
-onchange="searchJobs()"
->
+        <select
+            id="type"
+            onchange="searchJobs()"
+        >
 
-<option value="">
-All Types
-</option>
+            <option value="">
+                All Types
+            </option>
 
-<option value="Full-time">
-Full-time
-</option>
+            <option value="Full-time">
+                Full-time
+            </option>
 
-<option value="Part-time">
-Part-time
-</option>
+            <option value="Part-time">
+                Part-time
+            </option>
 
-<option value="Remote">
-Remote
-</option>
+            <option value="Remote">
+                Remote
+            </option>
 
-<option value="Contract">
-Contract
-</option>
+            <option value="Contract">
+                Contract
+            </option>
 
-</select>
-
-
-<select
-id="salary"
-onchange="searchJobs()"
->
-
-<option value="">
-Any Salary
-</option>
-
-<option value="100000">
-₦100,000+
-</option>
-
-<option value="200000">
-₦200,000+
-</option>
-
-<option value="300000">
-₦300,000+
-</option>
-
-</select>
-
-</div>
+        </select>
 
 
-<h2 id="jobs">
-Available Jobs
-</h2>
+        <select
+            id="salary"
+            onchange="searchJobs()"
+        >
 
-<br>
+            <option value="">
+                Any Salary
+            </option>
 
+            <option value="100000">
+                ₦100,000+
+            </option>
 
-<div
-id="jobList"
-class="jobs"
->
+            <option value="200000">
+                ₦200,000+
+            </option>
 
-<div class="loading">
-Loading jobs...
-</div>
+            <option value="300000">
+                ₦300,000+
+            </option>
 
-</div>
+        </select>
 
-
-<section
-id="post"
-class="info"
->
-
-<h2>
-Post a Job
-</h2>
-
-<br>
-
-<p>
-Employers can post available job opportunities
-on JobLink NG.
-</p>
-
-<br>
-
-<button onclick="postJob()">
-Post a Job
-</button>
-
-</section>
+    </div>
 
 
-<section
-id="safety"
-class="info"
->
+    <h2 id="jobs">
+        Available Jobs
+    </h2>
 
-<h2>
-Safety
-</h2>
+    <br>
 
-<br>
 
-<p>
-Never pay money to get a job. Be careful with
-requests for passwords, PINs or unnecessary
-bank information.
-</p>
+    <div
+        id="jobList"
+        class="jobs"
+    >
 
-</section>
+        <div class="loading">
+            Loading jobs...
+        </div>
+
+    </div>
+
+
+    <section
+        id="post"
+        class="info"
+    >
+
+        <h2>
+            Post a Job
+        </h2>
+
+        <br>
+
+        <p>
+            Employers can post available job opportunities
+            on JobLink NG.
+        </p>
+
+        <br>
+
+        <button onclick="postJob()">
+            Post a Job
+        </button>
+
+    </section>
+
+
+    <section
+        id="safety"
+        class="info"
+    >
+
+        <h2>
+            Safety
+        </h2>
+
+        <br>
+
+        <p>
+            Never pay money to get a job.
+            Be careful with requests for passwords,
+            PINs or unnecessary bank information.
+        </p>
+
+    </section>
 
 </div>
 
 
 <footer>
 
-© 2026 JobLink NG
+    © 2026 JobLink NG
 
 </footer>
 
@@ -423,7 +466,9 @@ bank information.
 
 <script>
 
-/* SUPABASE */
+/* =====================================================
+   SUPABASE
+===================================================== */
 
 const SUPABASE_URL =
 "https://eqxdoonyghqpykemhqde.supabase.co";
@@ -438,12 +483,16 @@ window.supabase.createClient(
 );
 
 
-/* JOBS */
+/* =====================================================
+   GLOBAL JOB DATA
+===================================================== */
 
 let allJobs = [];
 
 
-/* ESCAPE TEXT */
+/* =====================================================
+   SAFE TEXT
+===================================================== */
 
 function safe(value){
 
@@ -457,7 +506,9 @@ function safe(value){
 }
 
 
-/* DISPLAY JOBS */
+/* =====================================================
+   DISPLAY JOBS
+===================================================== */
 
 function displayJobs(jobs){
 
@@ -467,86 +518,114 @@ function displayJobs(jobs){
     if(!jobs || jobs.length === 0){
 
         box.innerHTML = `
+
             <div class="no-jobs">
-                <h3>No jobs found</h3>
+
+                <h3>
+                    No jobs found
+                </h3>
+
                 <br>
-                <p>There are no jobs matching your search.</p>
+
+                <p>
+                    There are no jobs matching your search.
+                </p>
+
             </div>
+
         `;
 
         return;
+
     }
 
 
-    box.innerHTML = jobs.map(function(job,index){
+    box.innerHTML = jobs.map(function(job){
+
+        const salary =
+            Number(job.salary || 0);
 
         return `
 
-        <div class="job">
+            <div class="job">
 
-            <h3>
-                ${safe(job.title)}
-            </h3>
+                <h3>
+                    ${safe(job.title)}
+                </h3>
 
-            <p>
-                <strong>Company:</strong>
-                ${safe(job.company)}
-            </p>
+                <p>
+                    <strong>
+                        Company:
+                    </strong>
 
-            <p>
-                📍 ${safe(job.location)}
-            </p>
+                    ${safe(job.company)}
+                </p>
 
-            <p>
-                💰 ₦${Number(job.salary || 0).toLocaleString()}
-            </p>
+                <p>
+                    📍 ${safe(job.location)}
+                </p>
 
-            <span class="tag">
-                ${safe(job.type)}
-            </span>
+                <p>
+                    💰 ₦${salary.toLocaleString()}
+                </p>
 
-            <p>
-                ${safe(job.description)}
-            </p>
+                <span class="tag">
+                    ${safe(job.type)}
+                </span>
 
-            <button
-                class="apply"
-                onclick="applyJob(${index})"
-            >
-                View / Apply
-            </button>
+                <p>
+                    ${safe(job.description)}
+                </p>
 
-        </div>
+                <button
+                    class="apply"
+                    onclick="applyJob('${safe(job.id)}')"
+                >
+                    View / Apply
+                </button>
+
+            </div>
 
         `;
 
     }).join("");
 
 }
-    /* SEARCH */
+
+
+/* =====================================================
+   SEARCH JOBS
+===================================================== */
 
 function searchJobs(){
 
     const keyword =
-        document.getElementById("keyword")
-        .value
-        .trim()
-        .toLowerCase();
+        document
+            .getElementById("keyword")
+            .value
+            .trim()
+            .toLowerCase();
+
 
     const location =
-        document.getElementById("location")
-        .value
-        .trim()
-        .toLowerCase();
+        document
+            .getElementById("location")
+            .value
+            .trim()
+            .toLowerCase();
+
 
     const type =
-        document.getElementById("type")
-        .value;
+        document
+            .getElementById("type")
+            .value;
+
 
     const salary =
         Number(
-            document.getElementById("salary")
-            .value || 0
+            document
+                .getElementById("salary")
+                .value || 0
         );
 
 
@@ -557,16 +636,20 @@ function searchJobs(){
                 String(job.title || "")
                 .toLowerCase();
 
+
             const company =
                 String(job.company || "")
                 .toLowerCase();
+
 
             const jobLocation =
                 String(job.location || "")
                 .toLowerCase();
 
+
             const jobType =
-                job.type || "";
+                String(job.type || "");
+
 
             const jobSalary =
                 Number(job.salary || 0);
@@ -611,76 +694,103 @@ function searchJobs(){
 }
 
 
-/* LOAD JOBS FROM SUPABASE */
+/* =====================================================
+   LOAD JOBS
+===================================================== */
 
 async function loadJobs(){
 
     const box =
         document.getElementById("jobList");
 
+
     box.innerHTML = `
+
         <div class="loading">
             Loading jobs...
         </div>
+
     `;
 
-    const result =
-        await db
-            .from("jobs")
-            .select(
-                "id,title,company,location,type,salary,description,created_at"
-            )
-            .order(
-                "created_at",
-                {
-                    ascending:false
-                }
-            );
 
-    console.log(
-        "Jobs:",
-        result.data
-    );
+    try{
 
-    console.log(
-        "Jobs error:",
-        result.error
-    );
+        const result =
+            await db
+                .from("Jobs")
+                .select(
+                    "id,title,company,location,type,salary,description,created_at"
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending:false
+                    }
+                );
 
-    if(result.error){
+
+        console.log(
+            "Jobs result:",
+            result
+        );
+
+
+        if(result.error){
+
+            throw result.error;
+
+        }
+
+
+        allJobs =
+            result.data || [];
+
+
+        displayJobs(allJobs);
+
+
+    }catch(error){
+
+        console.error(
+            "Load jobs error:",
+            error
+        );
+
 
         box.innerHTML = `
-            <div class="no-jobs">
+
+            <div class="error-box">
 
                 <h3>
                     Could not load jobs
                 </h3>
 
+                <br>
+
                 <p>
-                    ${safe(result.error.message)}
+                    ${safe(error.message)}
                 </p>
 
             </div>
-        `;
 
-        return;
+        `;
 
     }
 
-    allJobs =
-        result.data || [];
-
-    displayJobs(allJobs);
-
 }
-/* POST A JOB */
+
+
+/* =====================================================
+   POST A JOB
+===================================================== */
 
 function postJob(){
 
     const modal =
         document.createElement("div");
 
-    modal.className = "modal";
+    modal.className =
+        "modal";
 
 
     modal.innerHTML = `
@@ -776,36 +886,45 @@ function postJob(){
     ).onclick = async function(){
 
         const title =
-            document.getElementById(
-                "jobTitle"
-            ).value.trim();
+            document
+                .getElementById("jobTitle")
+                .value
+                .trim();
+
 
         const company =
-            document.getElementById(
-                "jobCompany"
-            ).value.trim();
+            document
+                .getElementById("jobCompany")
+                .value
+                .trim();
+
 
         const location =
-            document.getElementById(
-                "jobLocation"
-            ).value.trim();
+            document
+                .getElementById("jobLocation")
+                .value
+                .trim();
+
 
         const type =
-            document.getElementById(
-                "jobType"
-            ).value;
+            document
+                .getElementById("jobType")
+                .value;
+
 
         const salary =
             Number(
-                document.getElementById(
-                    "jobSalary"
-                ).value
+                document
+                    .getElementById("jobSalary")
+                    .value
             );
 
+
         const description =
-            document.getElementById(
-                "jobDescription"
-            ).value.trim();
+            document
+                .getElementById("jobDescription")
+                .value
+                .trim();
 
 
         if(
@@ -832,785 +951,107 @@ function postJob(){
             );
 
 
-        button.disabled = true;
+        button.disabled =
+            true;
+
 
         button.innerText =
             "Publishing...";
 
 
-        const result =
-            await db
-                .from("Jobs")
-                .insert([
-                    {
-                        title:title,
-                        company:company,
-                        location:location,
-                        type:type,
-                        salary:salary,
-                        description:description
-                    }
-                ]);
+        try{
+
+            const result =
+                await db
+                    .from("Jobs")
+                    .insert([
+                        {
+                            title:title,
+                            company:company,
+                            location:location,
+                            type:type,
+                            salary:salary,
+                            description:description
+                        }
+                    ])
+                    .select()
+                    .single();
 
 
-        console.log(
-            "Publish result:",
-            result
-        );
+            console.log(
+                "Publish result:",
+                result
+            );
 
 
-        if(result.error){
+            if(result.error){
+
+                throw result.error;
+
+            }
+
+
+            modal.innerHTML = `
+
+                <div class="modal-box success">
+
+                    <h2>
+                        Job Published!
+                    </h2>
+
+                    <br>
+
+                    <p>
+                        Your job was successfully
+                        published on JobLink NG.
+                    </p>
+
+                    <br>
+
+                    <button id="closeJob">
+                        Done
+                    </button>
+
+                </div>
+
+            `;
+
+
+            document.getElementById(
+                "closeJob"
+            ).onclick = function(){
+
+                modal.remove();
+
+                loadJobs();
+
+            };
+
+
+        }catch(error){
+
+            console.error(
+                "Publish job error:",
+                error
+            );
+
 
             alert(
                 "Could not publish job:\n\n" +
-                result.error.message
+                error.message
             );
 
-            button.disabled = false;
+
+            button.disabled =
+                false;
+
 
             button.innerText =
                 "Publish Job";
 
-            return;
-
         }
-
-
-        modal.innerHTML = `
-
-            <div class="modal-box success">
-
-                <h2>
-                    Job Published!
-                </h2>
-
-                <br>
-
-                <p>
-                    Your job was successfully
-                    published.
-                </p>
-
-                <br>
-
-                <button id="closeJob">
-                    Done
-                </button>
-
-            </div>
-
-        `;
-
-
-        document.getElementById(
-            "closeJob"
-        ).onclick = function(){
-
-            modal.remove();
-
-            loadJobs();
-
-        };
 
     };
 
 }
-
-
-/* =====================================================
-   APPLY FOR JOB
-===================================================== */
-
-function applyJob(index){
-
-    const job = allJobs[index];
-
-    if(!job){
-
-        alert(
-            "Job information could not be found."
-        );
-
-        return;
-
-    }
-
-
-    const modal =
-        document.createElement("div");
-
-    modal.className = "modal";
-
-
-    modal.innerHTML = `
-
-        <div class="modal-box">
-
-            <h2>
-                Apply for Job
-            </h2>
-
-            <br>
-
-            <p>
-                <strong>Job:</strong>
-                ${safe(job.title)}
-            </p>
-
-            <p>
-                <strong>Company:</strong>
-                ${safe(job.company)}
-            </p>
-
-            <br>
-
-            <input
-                id="applicantName"
-                type="text"
-                placeholder="Full name"
-            >
-
-            <input
-                id="applicantEmail"
-                type="email"
-                placeholder="Email address"
-            >
-
-            <input
-                id="applicantPhone"
-                type="tel"
-                placeholder="Phone number"
-            >
-
-            <label>
-                Upload CV
-            </label>
-
-            <input
-                id="applicantCV"
-                type="file"
-                accept=".pdf,.doc,.docx"
-            >
-
-            <button id="submitApplication">
-                Submit Application
-            </button>
-
-            <button
-                id="cancelApplication"
-                class="cancel"
-            >
-                Cancel
-            </button>
-
-        </div>
-
-    `;
-
-
-    document.body.appendChild(modal);
-
-
-    /* CANCEL */
-
-    document.getElementById(
-        "cancelApplication"
-    ).onclick = function(){
-
-        modal.remove();
-
-    };
-
-
-    /* SUBMIT APPLICATION */
-
-    document.getElementById(
-        "submitApplication"
-    ).onclick = async function(){
-
-        const name =
-            document.getElementById(
-                "applicantName"
-            ).value.trim();
-
-        const email =
-            document.getElementById(
-                "applicantEmail"
-            ).value.trim();
-
-        const phone =
-            document.getElementById(
-                "applicantPhone"
-            ).value.trim();
-
-        const cv =
-            document.getElementById(
-                "applicantCV"
-            ).files[0];
-
-
-        /* VALIDATE */
-
-        if(
-            !name ||
-            !email ||
-            !phone ||
-            !cv
-        ){
-
-            alert(
-                "Please fill in all fields and upload your CV."
-            );
-
-            return;
-
-        }
-
-
-        const button =
-            document.getElementById(
-                "submitApplication"
-            );
-
-
-        button.disabled = true;
-
-        button.innerText =
-            "Submitting...";
-
-
-        /* =================================================
-           UPLOAD CV
-        ================================================= */
-
-        const fileExtension =
-            cv.name
-                .split(".")
-                .pop()
-                .toLowerCase();
-
-
-        const fileName =
-            Date.now() +
-/* =====================================================
-   APPLY FOR JOB
-===================================================== */
-
-function applyJob(index){
-
-    const job = allJobs[index];
-
-    if(!job){
-
-        alert(
-            "Job information could not be found."
-        );
-
-        return;
-
-    }
-
-
-    const modal =
-        document.createElement("div");
-
-    modal.className = "modal";
-
-
-    modal.innerHTML = `
-
-        <div class="modal-box">
-
-            <h2>
-                Apply for Job
-            </h2>
-
-            <br>
-
-            <p>
-                <strong>Job:</strong>
-                ${safe(job.title)}
-            </p>
-
-            <p>
-                <strong>Company:</strong>
-                ${safe(job.company)}
-            </p>
-
-            <br>
-
-            <input
-                id="applicantName"
-                type="text"
-                placeholder="Full name"
-            >
-
-            <input
-                id="applicantEmail"
-                type="email"
-                placeholder="Email address"
-            >
-
-            <input
-                id="applicantPhone"
-                type="tel"
-                placeholder="Phone number"
-            >
-
-            <label>
-                Upload CV
-            </label>
-
-            <input
-                id="applicantCV"
-                type="file"
-                accept=".pdf,.doc,.docx"
-            >
-
-            <button id="submitApplication">
-                Submit Application
-            </button>
-
-            <button
-                id="cancelApplication"
-                class="cancel"
-            >
-                Cancel
-            </button>
-
-        </div>
-
-    `;
-
-
-    document.body.appendChild(modal);
-
-
-    document.getElementById(
-        "cancelApplication"
-    ).onclick = function(){
-
-        modal.remove();
-
-    };
-
-
-    document.getElementById(
-        "submitApplication"
-    ).onclick = async function(){
-
-        const name =
-            document.getElementById(
-                "applicantName"
-            ).value.trim();
-
-        const email =
-            document.getElementById(
-                "applicantEmail"
-            ).value.trim();
-
-        const phone =
-            document.getElementById(
-                "applicantPhone"
-            ).value.trim();
-
-        const cv =
-            document.getElementById(
-                "applicantCV"
-            ).files[0];
-
-
-        if(
-            !name ||
-            !email ||
-            !phone ||
-            !cv
-        ){
-
-            alert(
-                "Please fill in all fields and upload your CV."
-            );
-
-            return;
-
-        }
-
-
-        const button =
-            document.getElementById(
-                "submitApplication"
-            );
-
-
-        button.disabled = true;
-
-        button.innerText =
-/* =====================================================
-   APPLY FOR JOB
-===================================================== */
-
-function applyJob(index){
-
-    const job = allJobs[index];
-
-    if(!job){
-
-        alert(
-            "Job information could not be found."
-        );
-
-        return;
-
-    }
-
-
-    const modal =
-        document.createElement("div");
-
-    modal.className = "modal";
-
-
-    modal.innerHTML = `
-
-        <div class="modal-box">
-
-            <h2>
-                Apply for Job
-            </h2>
-
-            <br>
-
-            <p>
-                <strong>Job:</strong>
-                ${safe(job.title)}
-            </p>
-
-            <p>
-                <strong>Company:</strong>
-                ${safe(job.company)}
-            </p>
-
-            <br>
-
-            <input
-                id="applicantName"
-                type="text"
-                placeholder="Full name"
-            >
-
-            <input
-                id="applicantEmail"
-                type="email"
-                placeholder="Email address"
-            >
-
-            <input
-                id="applicantPhone"
-                type="tel"
-                placeholder="Phone number"
-            >
-
-            <label>
-                Upload CV
-            </label>
-
-            <input
-                id="applicantCV"
-                type="file"
-                accept=".pdf,.doc,.docx"
-            >
-
-            <button id="submitApplication">
-                Submit Application
-            </button>
-
-            <button
-                id="cancelApplication"
-                class="cancel"
-            >
-                Cancel
-            </button>
-
-        </div>
-
-    `;
-
-
-    document.body.appendChild(modal);
-
-
-    /* CANCEL */
-
-    document.getElementById(
-        "cancelApplication"
-    ).onclick = function(){
-
-        modal.remove();
-
-    };
-
-
-    /* SUBMIT APPLICATION */
-
-    document.getElementById(
-        "submitApplication"
-    ).onclick = async function(){
-
-        const name =
-            document.getElementById(
-                "applicantName"
-            ).value.trim();
-
-        const email =
-            document.getElementById(
-                "applicantEmail"
-            ).value.trim();
-
-        const phone =
-            document.getElementById(
-                "applicantPhone"
-            ).value.trim();
-
-        const cv =
-            document.getElementById(
-                "applicantCV"
-            ).files[0];
-
-
-        /* VALIDATION */
-
-        if(
-            !name ||
-            !email ||
-            !phone ||
-            !cv
-        ){
-
-            alert(
-                "Please fill in all fields and upload your CV."
-            );
-
-            return;
-
-        }
-
-
-        const button =
-            document.getElementById(
-                "submitApplication"
-            );
-
-
-        button.disabled = true;
-
-        button.innerText =
-            "Uploading CV...";
-
-
-        /* =================================================
-           UPLOAD CV
-        ================================================= */
-
-        const fileExtension =
-            cv.name
-                .split(".")
-                .pop()
-                .toLowerCase();
-
-
-        const fileName =
-            Date.now() +
-            "_" +
-            Math.random()
-                .toString(36)
-                .substring(2) +
-            "." +
-            fileExtension;
-
-
-        const filePath =
-            "applications/" +
-            fileName;
-
-
-        const uploadResult =
-            await db.storage
-                .from("cvs")
-                .upload(
-                    filePath,
-                    cv,
-                    {
-                        cacheControl:"3600",
-                        upsert:false
-                    }
-                );
-
-
-        console.log(
-            "CV upload result:",
-            uploadResult
-        );
-
-
-        if(uploadResult.error){
-
-            console.error(
-                uploadResult.error
-            );
-
-            alert(
-                "CV upload failed:\n\n" +
-                uploadResult.error.message
-            );
-
-            button.disabled = false;
-
-            button.innerText =
-                "Submit Application";
-
-            return;
-
-        }
-
-
-        /* =================================================
-           SAVE APPLICATION
-        ================================================= */
-
-        button.innerText =
-            "Saving Application...";
-
-
-        const applicationResult =
-            await db
-                .from("job_applications")
-                .insert([
-                    {
-                        job_id:job.id,
-                        applicant_name:name,
-                        applicant_email:email,
-                        phone:phone,
-                        cv_url:filePath,
-                        status:"pending"
-                    }
-                ]);
-
-
-        console.log(
-            "Application result:",
-            applicationResult
-        );
-
-
-        if(applicationResult.error){
-
-            console.error(
-                applicationResult.error
-            );
-
-            alert(
-                "Application could not be saved:\n\n" +
-                applicationResult.error.message
-            );
-
-            button.disabled = false;
-
-            button.innerText =
-                "Submit Application";
-
-            return;
-
-        }
-
-
-        /* =================================================
-           SUCCESS
-        ================================================= */
-
-        modal.innerHTML = `
-
-            <div class="modal-box success">
-
-                <h2>
-                    Application Submitted!
-                </h2>
-
-                <br>
-
-                <p>
-                    Your application has been
-                    successfully submitted.
-                </p>
-
-                <br>
-
-                <button id="closeApplication">
-                    Done
-                </button>
-
-            </div>
-
-        `;
-
-
-        document.getElementById(
-            "closeApplication"
-        ).onclick = function(){
-
-            modal.remove();
-
-        };
-
-    };
-
-    }
-
-/* START */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-        loadJobs();
-
-    }
-);
-
-
-/* ENTER TO SEARCH */
-
-document.getElementById(
-    "keyword"
-).addEventListener(
-    "keydown",
-    function(event){
-
-        if(event.key === "Enter"){
-
-            searchJobs();
-
-        }
-
-    }
-);
-
-
-document.getElementById(
-    "location"
-).addEventListener(
-    "keydown",
-    function(event){
-
-        if(event.key === "Enter"){
-
-            searchJobs();
-
-        }
-
-    }
-);
-
-</script>
-
-</body>
-</html>
+    
