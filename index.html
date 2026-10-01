@@ -794,3 +794,755 @@ function searchJobs(){
     );
 
 }
+/* =====================================================
+   POST A JOB
+===================================================== */
+
+function postJob(){
+
+    const modal =
+        document.createElement("div");
+
+    modal.className =
+        "modal";
+
+    modal.innerHTML = `
+
+        <div class="modal-box">
+
+            <h2>
+                Post a Job
+            </h2>
+
+            <br>
+
+            <label>
+                Job Title
+            </label>
+
+            <input
+                id="jobTitle"
+                placeholder="e.g. Security Officer"
+            >
+
+            <label>
+                Company Name
+            </label>
+
+            <input
+                id="jobCompany"
+                placeholder="Company name"
+            >
+
+            <label>
+                Location
+            </label>
+
+            <input
+                id="jobLocation"
+                placeholder="e.g. Lagos"
+            >
+
+            <label>
+                Job Type
+            </label>
+
+            <select id="jobType">
+
+                <option value="">
+                    Select job type
+                </option>
+
+                <option value="Full-time">
+                    Full-time
+                </option>
+
+                <option value="Part-time">
+                    Part-time
+                </option>
+
+                <option value="Remote">
+                    Remote
+                </option>
+
+                <option value="Contract">
+                    Contract
+                </option>
+
+            </select>
+
+            <label>
+                Monthly Salary
+            </label>
+
+            <input
+                id="jobSalary"
+                type="number"
+                placeholder="Monthly salary ₦"
+            >
+
+            <label>
+                Job Description
+            </label>
+
+            <textarea
+                id="jobDescription"
+                placeholder="Describe the job..."
+            ></textarea>
+
+            <button id="submitJob">
+                Publish Job
+            </button>
+
+            <button
+                id="cancelJob"
+                class="cancel"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(
+        modal
+    );
+
+    document.getElementById(
+        "cancelJob"
+    ).onclick =
+        function(){
+
+            modal.remove();
+
+        };
+
+    document.getElementById(
+        "submitJob"
+    ).onclick =
+        async function(){
+
+            const title =
+                document
+                    .getElementById("jobTitle")
+                    .value
+                    .trim();
+
+            const company =
+                document
+                    .getElementById("jobCompany")
+                    .value
+                    .trim();
+
+            const location =
+                document
+                    .getElementById("jobLocation")
+                    .value
+                    .trim();
+
+            const type =
+                document
+                    .getElementById("jobType")
+                    .value;
+
+            const salary =
+                Number(
+                    document
+                        .getElementById("jobSalary")
+                        .value
+                );
+
+            const description =
+                document
+                    .getElementById("jobDescription")
+                    .value
+                    .trim();
+
+            if(
+                !title ||
+                !company ||
+                !location ||
+                !type ||
+                !salary ||
+                !description
+            ){
+
+                alert(
+                    "Please fill in all fields."
+                );
+
+                return;
+
+            }
+
+            const button =
+                document.getElementById(
+                    "submitJob"
+                );
+
+            button.disabled =
+                true;
+
+            button.innerText =
+                "Publishing...";
+
+            try{
+
+                const result =
+                    await db
+                        .from("Jobs")
+                        .insert([
+                            {
+                                title:title,
+                                company:company,
+                                location:location,
+                                type:type,
+                                salary:salary,
+                                description:description
+                            }
+                        ])
+                        .select()
+                        .single();
+
+                console.log(
+                    "Publish result:",
+                    result
+                );
+
+                if(result.error){
+
+                    throw result.error;
+
+                }
+
+                alert(
+                    "Job published successfully!"
+                );
+
+                modal.remove();
+
+                await loadJobs();
+
+            }catch(error){
+
+                console.error(
+                    "Publish job error:",
+                    error
+                );
+
+                alert(
+                    "Could not publish job: " +
+                    error.message
+                );
+
+                button.disabled =
+                    false;
+
+                button.innerText =
+                    "Publish Job";
+
+            }
+
+        };
+
+}
+
+
+/* =====================================================
+   APPLY FOR JOB
+===================================================== */
+
+function applyJob(jobId){
+
+    const job =
+        allJobs.find(function(item){
+
+            return String(item.id) ===
+                String(jobId);
+
+        });
+
+    if(!job){
+
+        alert(
+            "Job information could not be found."
+        );
+
+        return;
+
+    }
+
+    const modal =
+        document.createElement("div");
+
+    modal.className =
+        "modal";
+
+    modal.innerHTML = `
+
+        <div class="modal-box">
+
+            <h2>
+                Apply for Job
+            </h2>
+
+            <br>
+
+            <div class="detail">
+
+                <strong>
+                    Job:
+                </strong>
+
+                ${safe(job.title)}
+
+            </div>
+
+            <div class="detail">
+
+                <strong>
+                    Company:
+                </strong>
+
+                ${safe(job.company)}
+
+            </div>
+
+            <div class="detail">
+
+                <strong>
+                    Location:
+                </strong>
+
+                ${safe(job.location)}
+
+            </div>
+
+            <hr style="margin:18px 0;">
+
+            <label>
+                Full Name
+            </label>
+
+            <input
+                id="appName"
+                type="text"
+                placeholder="Your full name"
+            >
+
+            <label>
+                Email
+            </label>
+
+            <input
+                id="appEmail"
+                type="email"
+                placeholder="Your email address"
+            >
+
+            <label>
+                Phone Number
+            </label>
+
+            <input
+                id="appPhone"
+                type="tel"
+                placeholder="Your phone number"
+            >
+
+            <label>
+                Your Location
+            </label>
+
+            <input
+                id="appLocation"
+                type="text"
+                placeholder="e.g. Lagos"
+            >
+
+            <label>
+                CV
+            </label>
+
+            <input
+                id="appCV"
+                type="file"
+                accept=".pdf,.doc,.docx"
+            >
+
+            <p class="small-text">
+                Accepted formats: PDF, DOC, DOCX.
+                Maximum size: 10MB.
+            </p>
+
+            <br>
+
+            <button id="submitApplication">
+                Submit Application
+            </button>
+
+            <button
+                id="cancelApplication"
+                class="cancel"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(
+        modal
+    );
+
+
+    document.getElementById(
+        "cancelApplication"
+    ).onclick =
+        function(){
+
+            modal.remove();
+
+        };
+
+
+    document.getElementById(
+        "submitApplication"
+    ).onclick =
+        async function(){
+
+            const name =
+                document
+                    .getElementById("appName")
+                    .value
+                    .trim();
+
+            const email =
+                document
+                    .getElementById("appEmail")
+                    .value
+                    .trim();
+
+            const phone =
+                document
+                    .getElementById("appPhone")
+                    .value
+                    .trim();
+
+            const location =
+                document
+                    .getElementById("appLocation")
+                    .value
+                    .trim();
+
+            const cvInput =
+                document.getElementById(
+                    "appCV"
+                );
+
+            const cv =
+                cvInput.files[0];
+
+
+            if(
+                !name ||
+                !email ||
+                !phone ||
+                !location ||
+                !cv
+            ){
+
+                alert(
+                    "Please fill in all fields and select your CV."
+                );
+
+                return;
+
+            }
+
+
+            const allowedTypes = [
+
+                "application/pdf",
+
+                "application/msword",
+
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+            ];
+
+
+            if(
+                !allowedTypes.includes(
+                    cv.type
+                )
+            ){
+
+                alert(
+                    "Please upload a PDF, DOC or DOCX file."
+                );
+
+                return;
+
+            }
+
+
+            const maxSize =
+                10 * 1024 * 1024;
+
+
+            if(
+                cv.size > maxSize
+            ){
+
+                alert(
+                    "Your CV must be 10MB or smaller."
+                );
+
+                return;
+
+            }
+
+
+            const button =
+                document.getElementById(
+                    "submitApplication"
+                );
+
+
+            button.disabled =
+                true;
+
+            button.innerText =
+                "Uploading CV...";
+
+
+            try{
+
+                /*
+                 * Create a unique file name.
+                 */
+
+                const originalName =
+                    cv.name
+                        .replace(
+                            /[^a-zA-Z0-9._-]/g,
+                            "_"
+                        );
+
+
+                const fileName =
+                    Date.now() +
+                    "_" +
+                    Math.random()
+                        .toString(36)
+                        .substring(2,8) +
+                    "_" +
+                    originalName;
+
+
+                /*
+                 * Upload CV.
+                 */
+
+                const uploadResult =
+                    await db
+                        .storage
+                        .from(CV_BUCKET)
+                        .upload(
+                            fileName,
+                            cv,
+                            {
+                                cacheControl:
+                                    "3600",
+                                upsert:false
+                            }
+                        );
+
+
+                console.log(
+                    "CV upload result:",
+                    uploadResult
+                );
+
+
+                if(
+                    uploadResult.error
+                ){
+
+                    throw uploadResult.error;
+
+                }
+
+
+                button.innerText =
+                    "Saving Application...";
+
+
+                /*
+                 * Save application.
+                 */
+
+                const applicationResult =
+                    await db
+                        .from("applications")
+                        .insert([
+                            {
+                                name:name,
+                                email:email,
+                                phone:phone,
+                                location:location,
+                                job_title:job.title,
+                                cv_name:cv.name,
+                                cv_path:fileName
+                            }
+                        ])
+                        .select();
+
+
+                console.log(
+                    "Application result:",
+                    applicationResult
+                );
+
+
+                if(
+                    applicationResult.error
+                ){
+
+                    /*
+                     * Remove CV if application
+                     * could not be saved.
+                     */
+
+                    await db
+                        .storage
+                        .from(CV_BUCKET)
+                        .remove([
+                            fileName
+                        ]);
+
+                    throw applicationResult.error;
+
+                }
+
+
+                modal.innerHTML = `
+
+                    <div class="modal-box success">
+
+                        <h2>
+                            Application Submitted!
+                        </h2>
+
+                        <br>
+
+                        <p>
+                            Your application for
+                            <strong>
+                                ${safe(job.title)}
+                            </strong>
+                            has been submitted successfully.
+                        </p>
+
+                        <br>
+
+                        <p>
+                            Your CV has also been uploaded successfully.
+                        </p>
+
+                        <br>
+
+                        <button
+                            id="closeSuccess"
+                        >
+                            Done
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                document.getElementById(
+                    "closeSuccess"
+                ).onclick =
+                    function(){
+
+                        modal.remove();
+
+                    };
+
+
+            }catch(error){
+
+                console.error(
+                    "Application error:",
+                    error
+                );
+
+
+                alert(
+                    "Application not saved: " +
+                    error.message
+                );
+
+
+                button.disabled =
+                    false;
+
+                button.innerText =
+                    "Submit Application";
+
+            }
+
+        };
+
+}
+
+
+/* =====================================================
+   START APPLICATION
+===================================================== */
+
+loadJobs();
+
+
+/* =====================================================
+   SERVICE WORKER
+===================================================== */
+
+if(
+    "serviceWorker" in navigator
+){
+
+    window.addEventListener(
+        "load",
+        function(){
+
+            navigator
+                .serviceWorker
+                .register(
+                    "sw.js"
+                )
+                .catch(function(error){
+
+                    console.log(
+                        "Service worker:",
+                        error
+                    );
+
+                });
+
+        }
+    );
+
+}
+
+</script>
+
+</body>
+
+</html>
