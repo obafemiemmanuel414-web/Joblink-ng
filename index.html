@@ -1,849 +1,787 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>JobLink NG</title>
 
 <link rel="manifest" href="manifest.json">
+
 <meta name="theme-color" content="#075e54">
 
 <style>
+
 *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+box-sizing:border-box;
+margin:0;
+padding:0;
 }
 
 body{
-    font-family:Arial,sans-serif;
-    background:#f4f7f6;
-    color:#222;
+font-family:Arial,sans-serif;
+background:#f5f7fa;
+color:#172033;
 }
 
 header{
-    background:#075e54;
-    color:white;
-    padding:18px 15px;
-    position:sticky;
-    top:0;
-    z-index:10;
-}
-
-.header-box{
-    max-width:900px;
-    margin:auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+background:#075e54;
+color:white;
+padding:18px 5%;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
 .logo{
-    font-size:22px;
-    font-weight:bold;
+font-size:24px;
+font-weight:bold;
 }
 
 nav a{
-    color:white;
-    text-decoration:none;
-    margin-left:12px;
-    font-size:14px;
+color:white;
+text-decoration:none;
+margin-left:18px;
 }
 
 .hero{
-    background:white;
-    padding:30px 15px;
-    text-align:center;
+background:#0b7a6e;
+color:white;
+text-align:center;
+padding:55px 20px;
 }
 
 .hero h1{
-    color:#075e54;
-    margin-bottom:10px;
+font-size:38px;
+margin-bottom:12px;
 }
 
 .hero p{
-    color:#666;
-    margin-bottom:20px;
+font-size:18px;
+margin-bottom:25px;
 }
 
-.search-box{
-    max-width:700px;
-    margin:auto;
-    display:flex;
-    gap:8px;
+.search{
+max-width:850px;
+margin:auto;
+background:white;
+padding:12px;
+border-radius:10px;
+display:flex;
+gap:10px;
 }
 
-.search-box input{
-    flex:1;
-    padding:13px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    font-size:15px;
+.search input{
+flex:1;
+padding:14px;
+border:1px solid #ddd;
+border-radius:7px;
+font-size:16px;
 }
 
 button{
-    border:0;
-    border-radius:8px;
-    padding:12px 18px;
-    background:#075e54;
-    color:white;
-    cursor:pointer;
-    font-size:15px;
+border:0;
+border-radius:7px;
+padding:13px 20px;
+background:#075e54;
+color:white;
+font-weight:bold;
+cursor:pointer;
 }
 
 button:hover{
-    opacity:.9;
+opacity:.9;
 }
 
 .container{
-    max-width:900px;
-    margin:25px auto;
-    padding:0 15px;
+max-width:1100px;
+margin:30px auto;
+padding:0 20px;
 }
 
-.section-title{
-    margin-bottom:15px;
-    color:#075e54;
+.filters{
+background:white;
+padding:20px;
+border-radius:10px;
+margin-bottom:25px;
 }
 
-#jobs{
-    display:grid;
-    gap:15px;
+.filters select{
+padding:11px;
+margin:5px;
+border:1px solid #ddd;
+border-radius:6px;
 }
 
-.job-card{
-    background:white;
-    border-radius:10px;
-    padding:18px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
+.jobs{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:18px;
 }
 
-.job-card h3{
-    color:#075e54;
-    margin-bottom:8px;
+.job{
+background:white;
+padding:22px;
+border-radius:10px;
+box-shadow:0 2px 8px #00000012;
 }
 
-.job-card p{
-    margin:6px 0;
-    color:#555;
+.job h3{
+margin-bottom:10px;
+color:#075e54;
 }
 
-.job-card button{
-    margin-top:12px;
+.job p{
+margin:7px 0;
+color:#555;
 }
 
-.empty{
-    background:white;
-    padding:25px;
-    text-align:center;
-    border-radius:10px;
-    color:#777;
+.tag{
+display:inline-block;
+background:#e5f5f2;
+color:#075e54;
+padding:5px 9px;
+border-radius:15px;
+font-size:13px;
+margin:8px 0;
 }
 
-#message{
-    margin:15px 0;
-    padding:12px;
-    border-radius:8px;
-    display:none;
+.apply{
+margin-top:12px;
+width:100%;
 }
 
-.success{
-    background:#d9f5e9;
-    color:#075e54;
-}
-
-.error{
-    background:#ffe1e1;
-    color:#a00000;
-}
-
-.modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.6);
-    z-index:100;
-    padding:20px;
-    overflow:auto;
-}
-
-.modal-box{
-    background:white;
-    max-width:600px;
-    margin:40px auto;
-    padding:22px;
-    border-radius:12px;
-}
-
-.modal-box h2{
-    color:#075e54;
-    margin-bottom:15px;
-}
-
-.form-group{
-    margin-bottom:14px;
-}
-
-.form-group label{
-    display:block;
-    margin-bottom:6px;
-    font-weight:bold;
-}
-
-.form-group input,
-.form-group textarea{
-    width:100%;
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:7px;
-    font-size:15px;
-}
-
-.form-group textarea{
-    min-height:100px;
-    resize:vertical;
-}
-
-.close{
-    background:#777;
-    margin-left:8px;
+.info{
+background:white;
+padding:30px;
+margin-top:30px;
+border-radius:10px;
 }
 
 footer{
-    text-align:center;
-    padding:25px;
-    margin-top:40px;
-    background:#075e54;
-    color:white;
+margin-top:40px;
+background:#172033;
+color:white;
+text-align:center;
+padding:25px;
+}
+
+.loading{
+text-align:center;
+padding:30px;
+}
+
+.no-jobs{
+background:white;
+padding:25px;
+border-radius:10px;
+text-align:center;
+}
+
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#00000080;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+overflow:auto;
+padding:20px;
+}
+
+.modal-box{
+background:white;
+padding:25px;
+border-radius:12px;
+width:90%;
+max-width:420px;
+}
+
+.modal-box input{
+width:100%;
+padding:12px;
+margin:8px 0 15px;
+border:1px solid #ddd;
+border-radius:7px;
+}
+
+.modal-box button{
+width:100%;
+}
+
+.cancel{
+background:#777 !important;
+margin-top:10px;
+}
+
+.status{
+font-size:14px;
+margin:5px 0 12px;
+color:#075e54;
+font-weight:bold;
 }
 
 @media(max-width:600px){
-    .header-box{
-        flex-direction:column;
-        gap:10px;
-    }
 
-    nav a{
-        margin:0 5px;
-    }
-
-    .search-box{
-        flex-direction:column;
-    }
-
-    .search-box button{
-        width:100%;
-    }
+.hero h1{
+font-size:30px;
 }
+
+.search{
+flex-direction:column;
+}
+
+nav{
+display:none;
+}
+
+}
+
 </style>
+
 </head>
 
 <body>
 
 <header>
-    <div class="header-box">
-        <div class="logo">JobLink NG</div>
 
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#jobs-section">Jobs</a>
-        </nav>
-    </div>
+<div class="logo">JobLink NG</div>
+
+<nav>
+<a href="#jobs">Jobs</a>
+<a href="#post">Post a Job</a>
+<a href="#safety">Safety</a>
+</nav>
+
 </header>
 
-<section class="hero" id="home">
 
-    <h1>Find Your Next Job</h1>
+<section class="hero">
 
-    <p>Discover job opportunities and apply easily with JobLink NG.</p>
+<h1>Find Your Next Job</h1>
 
-    <div class="search-box">
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Search jobs..."
-        >
+<p>
+Connect with employers and discover job opportunities across Nigeria.
+</p>
 
-        <button onclick="searchJobs()">
-            Search
-        </button>
-    </div>
+<div class="search">
+
+<input
+id="keyword"
+type="text"
+placeholder="Job title, skill or keyword"
+>
+
+<input
+id="location"
+type="text"
+placeholder="Location e.g. Lagos"
+>
+
+<button onclick="searchJobs()">
+Search Jobs
+</button>
+
+</div>
 
 </section>
 
+
 <div class="container">
 
-    <div id="message"></div>
+<div class="filters">
 
-    <section id="jobs-section">
+<strong>Filter jobs:</strong>
 
-        <h2 class="section-title">
-            Available Jobs
-        </h2>
+<select id="type" onchange="searchJobs()">
 
-        <div id="jobs">
+<option value="">All job types</option>
 
-            <div class="empty">
-                Loading jobs...
-            </div>
+<option value="Full-time">Full-time</option>
 
-        </div>
+<option value="Part-time">Part-time</option>
 
-    </section>
+<option value="Remote">Remote</option>
+
+<option value="Contract">Contract</option>
+
+</select>
+
+
+<select id="salary" onchange="searchJobs()">
+
+<option value="">Any salary</option>
+
+<option value="100000">₦100,000+</option>
+
+<option value="200000">₦200,000+</option>
+
+<option value="300000">₦300,000+</option>
+
+</select>
+
+</div>
+
+
+<h2 id="jobs">Available Jobs</h2>
+
+<br>
+
+<div
+class="jobs"
+id="jobList"
+>
+
+<div class="loading">
+Loading jobs...
+</div>
 
 </div>
 
-<div class="modal" id="applicationModal">
 
-    <div class="modal-box">
+<section class="info" id="post">
 
-        <h2>Apply for Job</h2>
+<h2>Post a Job</h2>
 
-        <p id="selectedJob"></p>
+<br>
 
-        <form id="applicationForm">
+<p>
+Employers can use JobLink NG to advertise opportunities and connect with job seekers.
+</p>
 
-            <div class="form-group">
-                <label>Full Name</label>
+<br>
 
-                <input
-                    type="text"
-                    id="applicantName"
-                    required
-                >
-            </div>
+<button onclick="postJob()">
+Post a Job
+</button>
 
-            <div class="form-group">
-                <label>Email</label>
+</section>
 
-                <input
-                    type="email"
-                    id="applicantEmail"
-                    required
-                >
-            </div>
 
-            <div class="form-group">
-                <label>Phone Number</label>
+<section class="info" id="safety">
 
-                <input
-                    type="tel"
-                    id="applicantPhone"
-                    required
-                >
-            </div>
+<h2>Stay Safe From Job Scams</h2>
 
-            <div class="form-group">
-                <label>Upload CV</label>
+<br>
 
-                <input
-                    type="file"
-                    id="cvFile"
-                    accept=".pdf,.doc,.docx"
-                    required
-                >
-            </div>
+<p>
+Never send money to get a job. Be careful with requests for passwords, PINs, bank details or unnecessary personal information.
+</p>
 
-            <button type="submit">
-                Submit Application
-            </button>
-
-            <button
-                type="button"
-                class="close"
-                onclick="closeApplication()"
-            >
-                Cancel
-            </button>
-
-        </form>
-
-    </div>
+</section>
 
 </div>
+
 
 <footer>
-    <p>© 2026 JobLink NG. All rights reserved.</p>
+
+<p>
+© 2026 JobLink NG — Connecting Nigerians with opportunities.
+</p>
+
 </footer>
+
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-/* =====================================================
-   SUPABASE CONNECTION
-===================================================== */
 
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL =
+"https://eqxdoonyghqpykemhqde.supabase.co";
 
-const db = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
+const SUPABASE_ANON_KEY =
+"sb_publishable_cgYERMnBcyshrtTcHpscvw_tgxBUc07";
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
 );
 
 
-/* =====================================================
-   VARIABLES
-===================================================== */
+/* JOBS FROM SUPABASE */
 
-let allJobs = [];
-let selectedJobId = null;
+let jobs = [];
 
 
-/* =====================================================
-   LOAD JOBS
-===================================================== */
+/* LOAD JOBS */
 
 async function loadJobs(){
 
-    const jobsContainer = document.getElementById("jobs");
+const box =
+document.getElementById("jobList");
 
-    jobsContainer.innerHTML = `
-        <div class="empty">
-            Loading jobs...
-        </div>
-    `;
+box.innerHTML =
+'<div class="loading">Loading jobs...</div>';
 
-    try{
+try{
 
-        const { data, error } = await db
-            .from("Jobs")
-            .select("*")
-            .order("id", { ascending:false });
+const result =
+await supabaseClient
+.from("jobs")
+.select("*")
+.order("created_at",{ascending:false});
 
-        if(error){
-            console.error(error);
 
-            jobsContainer.innerHTML = `
-                <div class="empty">
-                    Unable to load jobs.
-                    <br><br>
-                    Please try again.
-                </div>
-            `;
+if(result.error){
 
-            return;
-        }
+console.error(result.error);
 
-        allJobs = data || [];
+box.innerHTML =
+'<div class="no-jobs"><h3>Unable to load jobs</h3><p>Please try again.</p></div>';
 
-        displayJobs(allJobs);
+return;
 
-    }catch(error){
-
-        console.error(error);
-
-        jobsContainer.innerHTML = `
-            <div class="empty">
-                Something went wrong while loading jobs.
-            </div>
-        `;
-    }
 }
 
 
-/* =====================================================
-   DISPLAY JOBS
-===================================================== */
+jobs = result.data || [];
 
-function displayJobs(jobs){
+displayJobs(jobs);
 
-    const jobsContainer = document.getElementById("jobs");
+}catch(error){
 
-    if(!jobs || jobs.length === 0){
+console.error(error);
 
-        jobsContainer.innerHTML = `
-            <div class="empty">
-                No jobs available at the moment.
-            </div>
-        `;
+box.innerHTML =
+'<div class="no-jobs"><h3>Unable to load jobs</h3><p>Please refresh the page.</p></div>';
 
-        return;
-    }
+}
 
-    jobsContainer.innerHTML = "";
-
-    jobs.forEach(job => {
-
-        const title =
-            job.title ||
-            job.Title ||
-            job.job_title ||
-            job.Job ||
-            "Job Opportunity";
-
-        const company =
-            job.company ||
-            job.Company ||
-            job.company_name ||
-            "Company not specified";
-
-        const location =
-            job.location ||
-            job.Location ||
-            "Location not specified";
-
-        const description =
-            job.description ||
-            job.Description ||
-            job.details ||
-            "No job description provided.";
-
-        const card = document.createElement("div");
-
-        card.className = "job-card";
-
-        card.innerHTML = `
-            <h3>${escapeHTML(title)}</h3>
-
-            <p>
-                <strong>Company:</strong>
-                ${escapeHTML(company)}
-            </p>
-
-            <p>
-                <strong>Location:</strong>
-                ${escapeHTML(location)}
-            </p>
-
-            <p>
-                ${escapeHTML(description)}
-            </p>
-
-            <button onclick="openApplication('${job.id}')">
-                Apply Now
-            </button>
-        `;
-
-        jobsContainer.appendChild(card);
-    });
 }
 
 
-/* =====================================================
-   SEARCH JOBS
-===================================================== */
+/* DISPLAY JOBS */
+
+function displayJobs(list){
+
+const box =
+document.getElementById("jobList");
+
+if(!list || list.length === 0){
+
+box.innerHTML =
+`
+<div class="no-jobs">
+
+<h3>No jobs available yet</h3>
+
+<p>
+New jobs posted on JobLink NG will appear here.
+</p>
+
+</div>
+`;
+
+return;
+
+}
+
+
+box.innerHTML =
+list.map(function(job){
+
+return `
+
+<div class="job">
+
+<h3>${job.title || "Job opportunity"}</h3>
+
+<p>
+<strong>Company:</strong>
+${job.company || "Company"}
+</p>
+
+<p>
+📍 ${job.location || "Nigeria"}
+</p>
+
+<p>
+💰 ₦${Number(job.salary || 0).toLocaleString()} / month
+</p>
+
+<span class="tag">
+${job.type || "Full-time"}
+</span>
+
+<button
+class="apply"
+onclick="applyJob('${escapeText(job.title || "Job opportunity")}')"
+>
+View / Apply
+</button>
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+
+/* SEARCH */
 
 function searchJobs(){
 
-    const search =
-        document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
+const keyword =
+document.getElementById("keyword")
+.value
+.trim()
+.toLowerCase();
 
-    if(!search){
+const location =
+document.getElementById("location")
+.value
+.trim()
+.toLowerCase();
 
-        displayJobs(allJobs);
+const type =
+document.getElementById("type")
+.value;
 
-        return;
-    }
-
-    const filtered = allJobs.filter(job => {
-
-        const text = Object.values(job)
-            .join(" ")
-            .toLowerCase();
-
-        return text.includes(search);
-    });
-
-    displayJobs(filtered);
-}
+const salary =
+document.getElementById("salary")
+.value;
 
 
-/* =====================================================
-   ENTER KEY SEARCH
-===================================================== */
+const results =
+jobs.filter(function(job){
 
-document
-.getElementById("searchInput")
-.addEventListener("keydown", function(event){
+const title =
+String(job.title || "").toLowerCase();
 
-    if(event.key === "Enter"){
-        searchJobs();
-    }
+const company =
+String(job.company || "").toLowerCase();
+
+const jobLocation =
+String(job.location || "").toLowerCase();
+
+const jobType =
+String(job.type || "");
+
+const jobSalary =
+Number(job.salary || 0);
+
+
+const keywordMatch =
+!keyword ||
+title.includes(keyword) ||
+company.includes(keyword);
+
+const locationMatch =
+!location ||
+jobLocation.includes(location);
+
+const typeMatch =
+!type ||
+jobType === type;
+
+const salaryMatch =
+!salary ||
+jobSalary >= Number(salary);
+
+
+return
+keywordMatch &&
+locationMatch &&
+typeMatch &&
+salaryMatch;
 
 });
 
 
-/* =====================================================
-   OPEN APPLICATION
-===================================================== */
+displayJobs(results);
 
-function openApplication(jobId){
-
-    selectedJobId = jobId;
-
-    const job = allJobs.find(
-        item => String(item.id) === String(jobId)
-    );
-
-    if(!job){
-        showMessage(
-            "Job could not be found.",
-            "error"
-        );
-
-        return;
-    }
-
-    const title =
-        job.title ||
-        job.Title ||
-        job.job_title ||
-        job.Job ||
-        "Job Opportunity";
-
-    document.getElementById("selectedJob").innerHTML =
-        `<strong>Applying for:</strong> ${escapeHTML(title)}`;
-
-    document.getElementById("applicationModal").style.display = "block";
 }
 
 
-/* =====================================================
-   CLOSE APPLICATION
-===================================================== */
+/* SAFELY HANDLE JOB TITLE */
 
-function closeApplication(){
+function escapeText(text){
 
-    document.getElementById("applicationModal").style.display = "none";
+return String(text)
+.replace(/\\/g,"\\\\")
+.replace(/'/g,"\\'")
+.replace(/`/g,"\\`");
 
-    document.getElementById("applicationForm").reset();
-
-    selectedJobId = null;
 }
 
 
-/* =====================================================
-   SUBMIT APPLICATION
-===================================================== */
+/* APPLY MODAL */
 
-document
-.getElementById("applicationForm")
-.addEventListener("submit", async function(event){
+function applyJob(title){
 
-    event.preventDefault();
+const modal =
+document.createElement("div");
 
-    if(!selectedJobId){
+modal.className="modal";
 
-        showMessage(
-            "Please select a job first.",
-            "error"
-        );
+modal.innerHTML = `
 
-        return;
-    }
+<div class="modal-box">
 
-    const name =
-        document.getElementById("applicantName").value.trim();
+<h2>Apply for Job</h2>
 
-    const email =
-        document.getElementById("applicantEmail").value.trim();
+<br>
 
-    const phone =
-        document.getElementById("applicantPhone").value.trim();
+<p>
+Applying for:
+<strong>${title}</strong>
+</p>
 
-    const cv =
-        document.getElementById("cvFile").files[0];
+<br>
 
-    if(!name || !email || !phone || !cv){
+<input
+id="appName"
+type="text"
+placeholder="Full name"
+>
 
-        showMessage(
-            "Please complete all application fields.",
-            "error"
-        );
+<input
+id="appEmail"
+type="email"
+placeholder="Email address"
+>
 
-        return;
-    }
+<input
+id="appPhone"
+type="tel"
+placeholder="Phone number"
+>
 
-    const submitButton =
-        document.querySelector(
-            "#applicationForm button[type='submit']"
-        );
+<input
+id="appLocation"
+type="text"
+placeholder="Your location"
+>
 
-    submitButton.disabled = true;
-    submitButton.textContent = "Submitting...";
+<label>
+<strong>Upload CV</strong>
+</label>
 
-    try{
+<br><br>
 
-        /*
-         * Upload CV
-         */
+<input
+id="cvFile"
+type="file"
+accept=".pdf,.doc,.docx"
+>
 
-        const fileName =
-            Date.now() +
-            "_" +
-            cv.name.replace(/\s+/g, "_");
+<div
+id="uploadStatus"
+class="status"
+></div>
 
-        const filePath =
-            "applications/" + fileName;
+<button
+id="submitApplication"
+>
+Submit Application
+</button>
 
+<button
+class="cancel"
+id="cancelApplication"
+>
+Cancel
+</button>
 
-        const { error: uploadError } =
-            await db.storage
-            .from("CV")
-            .upload(
-                filePath,
-                cv,
-                {
-                    upsert:false
-                }
-            );
+</div>
 
+`;
 
-        if(uploadError){
+document.body.appendChild(modal);
 
-            console.error(uploadError);
 
-            showMessage(
-                "CV upload failed. Please try again.",
-                "error"
-            );
+document.getElementById(
+"cancelApplication"
+).onclick=function(){
 
-            submitButton.disabled = false;
-            submitButton.textContent = "Submit Application";
+modal.remove();
 
-            return;
-        }
+};
 
 
-        /*
-         * Save application
-         */
+document.getElementById(
+"submitApplication"
+).onclick=function(){
 
-        const applicationData = {
+submitApplication(title,modal);
 
-            Name: name,
+};
 
-            Email: email,
-
-            Phone: phone,
-
-            cv_path: filePath,
-
-            job_id: selectedJobId
-
-        };
-
-
-        const { error: insertError } =
-            await db
-            .from("Applications")
-            .insert([applicationData]);
-
-
-        if(insertError){
-
-            console.error(insertError);
-
-            showMessage(
-                "Your CV uploaded, but the application could not be saved.",
-                "error"
-            );
-
-            submitButton.disabled = false;
-            submitButton.textContent = "Submit Application";
-
-            return;
-        }
-
-
-        /*
-         * Success
-         */
-
-        closeApplication();
-
-        showMessage(
-            "Application submitted successfully! 🎉",
-            "success"
-        );
-
-    }catch(error){
-
-        console.error(error);
-
-        showMessage(
-            "Something went wrong. Please try again.",
-            "error"
-        );
-
-    }
-
-    submitButton.disabled = false;
-    submitButton.textContent = "Submit Application";
-
-});
-
-
-/* =====================================================
-   MESSAGE
-===================================================== */
-
-function showMessage(message,type){
-
-    const box =
-        document.getElementById("message");
-
-    box.textContent = message;
-
-    box.className = "";
-
-    box.classList.add(type);
-
-    box.style.display = "block";
-
-    setTimeout(() => {
-
-        box.style.display = "none";
-
-    },5000);
 }
 
 
-/* =====================================================
-   HTML SECURITY
-===================================================== */
+/* APPLICATION SUBMISSION */
 
-function escapeHTML(value){
+async function submitApplication(title,modal){
 
-    return String(value ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+const name =
+document.getElementById("appName")
+.value.trim();
+
+const email =
+document.getElementById("appEmail")
+.value.trim();
+
+const phone =
+document.getElementById("appPhone")
+.value.trim();
+
+const location =
+document.getElementById("appLocation")
+.value.trim();
+
+const cv =
+document.getElementById("cvFile")
+.files[0];
+
+const status =
+document.getElementById("uploadStatus");
+
+const button =
+document.getElementById("submitApplication");
+
+
+if(!name || !email || !phone || !location){
+
+alert("Please complete all your details.");
+
+return;
+
 }
 
 
-/* =====================================================
-   CLOSE MODAL WHEN CLICKING OUTSIDE
-===================================================== */
+if(!cv){
 
-window.addEventListener("click", function(event){
+alert("Please select your CV first.");
 
-    const modal =
-        document.getElementById("applicationModal");
+return;
 
-    if(event.target === modal){
-
-        closeApplication();
-
-    }
-
-});
+}
 
 
-/* =====================================================
-   START APP
-===================================================== */
+if(cv.size > 5 * 1024 * 1024){
 
-loadJobs();
+alert("Your CV is too large. Maximum size is 5MB.");
 
-</script>
+return;
 
-</body>
-</html>
+}
+
+
+button.disabled=true;
+
+button.innerText="Submitting...";
+
+status.innerText="Please wait...";
+
+
+/* PART 2 CONTINUES HERE */
