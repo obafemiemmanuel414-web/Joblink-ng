@@ -618,18 +618,16 @@ async function loadJobs(){
     const box =
         document.getElementById("jobList");
 
-
     box.innerHTML = `
         <div class="loading">
             Loading jobs...
         </div>
     `;
 
-
     const result =
         await db
-        
-            .select(.from("jobs")
+            .from("jobs")
+            .select(
                 "id,title,company,location,type,salary,description,created_at"
             )
             .order(
@@ -639,23 +637,19 @@ async function loadJobs(){
                 }
             );
 
-
     console.log(
         "Jobs:",
         result.data
     );
-
 
     console.log(
         "Jobs error:",
         result.error
     );
 
-
     if(result.error){
 
         box.innerHTML = `
-
             <div class="no-jobs">
 
                 <h3>
@@ -667,23 +661,18 @@ async function loadJobs(){
                 </p>
 
             </div>
-
         `;
 
         return;
 
     }
 
-
     allJobs =
         result.data || [];
-
 
     displayJobs(allJobs);
 
 }
-
-
 /* POST A JOB */
 
 function postJob(){
