@@ -8,9 +8,8 @@
   "description": "Find jobs and opportunities in Nigeria.",
   "icons": [
   {
-    "src": "Icon.png
+    "src": "Icon.png",
     "sizes": "1536x1536",
     "type": "image/png"
   }
   ]
-}
