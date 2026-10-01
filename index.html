@@ -11,10 +11,10 @@
 
 <link rel="manifest" href="manifest.json">
 
-<!-- SUPABASE LIBRARY -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <meta name="theme-color" content="#075e54">
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
@@ -118,7 +118,6 @@ nav a{
     display:flex;
     gap:8px;
     margin-top:15px;
-    flex-wrap:wrap;
 }
 
 button{
@@ -220,12 +219,6 @@ footer{
     font-size:14px;
 }
 
-.loading{
-    text-align:center;
-    padding:25px;
-    color:#666;
-}
-
 .empty{
     background:white;
     padding:25px;
@@ -273,9 +266,13 @@ JobLink NG
 </div>
 
 <nav>
+
 <a href="#jobs">Jobs</a>
+
 <a href="#post">Post a Job</a>
+
 <a href="#safety">Safety</a>
+
 </nav>
 
 </header>
@@ -285,7 +282,9 @@ JobLink NG
 
 <h1>Find Your Next Job</h1>
 
-<p>Find jobs and opportunities across Nigeria.</p>
+<p>
+Find jobs and opportunities across Nigeria.
+</p>
 
 <div class="search-box">
 
@@ -303,22 +302,52 @@ placeholder="Location e.g. Lagos"
 oninput="filterJobs()"
 >
 
-<select id="type" onchange="filterJobs()">
+<select
+id="type"
+onchange="filterJobs()"
+>
 
 <option value="">All Job Types</option>
-<option value="Full-time">Full-time</option>
-<option value="Part-time">Part-time</option>
-<option value="Remote">Remote</option>
-<option value="Contract">Contract</option>
+
+<option value="Full-time">
+Full-time
+</option>
+
+<option value="Part-time">
+Part-time
+</option>
+
+<option value="Remote">
+Remote
+</option>
+
+<option value="Contract">
+Contract
+</option>
 
 </select>
 
-<select id="salary" onchange="filterJobs()">
 
-<option value="">All Salaries</option>
-<option value="100000">₦100,000+</option>
-<option value="200000">₦200,000+</option>
-<option value="300000">₦300,000+</option>
+<select
+id="salary"
+onchange="filterJobs()"
+>
+
+<option value="">
+All Salaries
+</option>
+
+<option value="100000">
+₦100,000+
+</option>
+
+<option value="200000">
+₦200,000+
+</option>
+
+<option value="300000">
+₦300,000+
+</option>
 
 </select>
 
@@ -327,22 +356,22 @@ oninput="filterJobs()"
 </section>
 
 
-<main class="container" id="jobs">
+<main
+class="container"
+id="jobs"
+>
 
 <h2 class="section-title">
 Available Jobs
 </h2>
 
-<div id="jobList">
-
-<div class="loading">
-Loading jobs...
-</div>
-
-</div>
+<div id="jobList"></div>
 
 
-<section class="post-section" id="post">
+<section
+class="post-section"
+id="post"
+>
 
 <h2>Post a Job</h2>
 
@@ -360,7 +389,10 @@ Post a Job
 </section>
 
 
-<section class="safety" id="safety">
+<section
+class="safety"
+id="safety"
+>
 
 <h2>Safety First</h2>
 
@@ -382,9 +414,12 @@ personal information.
 </footer>
 
 
-<!-- APPLY MODAL -->
+<!-- APPLICATION MODAL -->
 
-<div class="modal" id="applicationModal">
+<div
+class="modal"
+id="applicationModal"
+>
 
 <div class="modal-box">
 
@@ -448,6 +483,7 @@ required
 <input
 id="appLocation"
 type="text"
+placeholder="e.g. Lagos"
 required
 >
 
@@ -489,7 +525,10 @@ class="status"
 
 <!-- POST JOB MODAL -->
 
-<div class="modal" id="postJobModal">
+<div
+class="modal"
+id="postJobModal"
+>
 
 <div class="modal-box">
 
@@ -550,13 +589,30 @@ required
 
 <label>Job Type</label>
 
-<select id="jobType" required>
+<select
+id="jobType"
+required
+>
 
-<option value="">Select type</option>
-<option value="Full-time">Full-time</option>
-<option value="Part-time">Part-time</option>
-<option value="Remote">Remote</option>
-<option value="Contract">Contract</option>
+<option value="">
+Select type
+</option>
+
+<option value="Full-time">
+Full-time
+</option>
+
+<option value="Part-time">
+Part-time
+</option>
+
+<option value="Remote">
+Remote
+</option>
+
+<option value="Contract">
+Contract
+</option>
 
 </select>
 
@@ -614,12 +670,17 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
 "sb_publishable_cgYERMnBcyshrtTcHpscvw_tgxBUc07";
 
+
 const supabaseClient =
 window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
 );
 
+
+/* =========================
+   JOBS
+========================= */
 
 let jobs = [
 
@@ -680,10 +741,15 @@ description:"Office assistant opportunity."
 ];
 
 
+/* =========================
+   DISPLAY JOBS
+========================= */
+
 function displayJobs(list){
 
 const container =
 document.getElementById("jobList");
+
 
 if(!list.length){
 
@@ -694,8 +760,12 @@ return;
 
 }
 
+
 container.innerHTML =
-list.map(function(job,index){
+list.map(function(job){
+
+const realIndex =
+jobs.indexOf(job);
 
 return `
 
@@ -703,23 +773,35 @@ return `
 
 <h3>${job.title}</h3>
 
-<p><strong>Company:</strong> ${job.company}</p>
+<p>
+<strong>Company:</strong>
+${job.company}
+</p>
 
-<p><strong>Location:</strong> ${job.location}</p>
+<p>
+<strong>Location:</strong>
+${job.location}
+</p>
 
-<p><strong>Type:</strong> ${job.type}</p>
+<p>
+<strong>Type:</strong>
+${job.type}
+</p>
 
-<p><strong>Salary:</strong>
+<p>
+<strong>Salary:</strong>
 ₦${Number(job.salary).toLocaleString()} monthly
 </p>
 
-<p>${job.description || ""}</p>
+<p>
+${job.description || ""}
+</p>
 
 <div class="job-buttons">
 
 <button
 class="primary"
-onclick="applyJob(${index})"
+onclick="applyJob(${realIndex})"
 >
 Apply
 </button>
@@ -735,23 +817,37 @@ Apply
 }
 
 
+/* =========================
+   SEARCH / FILTER
+========================= */
+
 function filterJobs(){
 
 const keyword =
 document.getElementById("keyword")
-.value.toLowerCase();
+.value
+.toLowerCase()
+.trim();
+
 
 const location =
 document.getElementById("location")
-.value.toLowerCase();
+.value
+.toLowerCase()
+.trim();
+
 
 const type =
-document.getElementById("type").value;
+document.getElementById("type")
+.value;
+
 
 const salary =
 Number(
-document.getElementById("salary").value || 0
+document.getElementById("salary")
+.value || 0
 );
+
 
 const filtered =
 jobs.filter(function(job){
@@ -781,6 +877,7 @@ Number(job.salary) >= salary)
 
 });
 
+
 displayJobs(filtered);
 
 }
@@ -791,17 +888,26 @@ let selectedJobTitle = "";
 
 function applyJob(index){
 
+if(!jobs[index]){
+
+return;
+
+}
+
 selectedJobTitle =
 jobs[index].title;
 
-document.getElementById(
-"applicationModal"
-).style.display = "block";
 
 document.getElementById(
 "applicationStatus"
 ).innerText =
 "Applying for: " + selectedJobTitle;
+
+
+document.getElementById(
+"applicationModal"
+).style.display =
+"block";
 
 }
 
@@ -810,471 +916,8 @@ function closeApplicationModal(){
 
 document.getElementById(
 "applicationModal"
-).style.display = "none";
+).style.display =
+"none";
 
 }
-function submitApplication(event){
 
-    event.preventDefault();
-
-    const form =
-        document.getElementById("applicationForm");
-
-    const status =
-        document.getElementById("applicationStatus");
-
-    const button =
-        form.querySelector("button[type='submit']");
-
-    const name =
-        document.getElementById("appName").value.trim();
-
-    const email =
-        document.getElementById("appEmail").value.trim();
-
-    const phone =
-        document.getElementById("appPhone").value.trim();
-
-    const location =
-        document.getElementById("appLocation").value.trim();
-
-    const cvFile =
-        document.getElementById("appCV").files[0];
-
-
-    if(
-        !name ||
-        !email ||
-        !phone ||
-        !location ||
-        !cvFile
-    ){
-
-        status.innerText =
-            "Please fill in all fields and upload your CV.";
-
-        return;
-    }
-
-
-    if(cvFile.size > 5 * 1024 * 1024){
-
-        status.innerText =
-            "CV must be less than 5MB.";
-
-        return;
-    }
-
-
-    const allowedTypes = [
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    ];
-
-
-    if(!allowedTypes.includes(cvFile.type)){
-
-        status.innerText =
-            "Please upload a PDF, DOC or DOCX CV.";
-
-        return;
-    }
-
-
-    button.disabled = true;
-    button.innerText = "Submitting...";
-    status.innerText = "Uploading your CV...";
-
-
-    (async function(){
-
-        try{
-
-            const safeFileName =
-                cvFile.name.replace(
-                    /[^a-zA-Z0-9._-]/g,
-                    "_"
-                );
-
-
-            const filePath =
-                Date.now() +
-                "_" +
-                Math.random()
-                .toString(36)
-                .substring(2,8) +
-                "_" +
-                safeFileName;
-
-
-            const uploadResult =
-                await supabaseClient
-                .storage
-                .from("cvs")
-                .upload(filePath,cvFile);
-
-
-            if(uploadResult.error){
-
-                throw new Error(
-                    "CV upload failed: " +
-                    uploadResult.error.message
-                );
-
-            }
-
-
-            status.innerText =
-                "Saving application...";
-
-
-            const applicationResult =
-    await supabaseClient
-    .from("Cvs")
-    .insert([{
-
-        "Name": name,
-
-        "Email": email,
-
-        "Phone": phone,
-
-function submitApplication(event){
-
-    event.preventDefault();
-
-    const form =
-        document.getElementById("applicationForm");
-
-    const status =
-        document.getElementById("applicationStatus");
-
-    const button =
-        form.querySelector("button[type='submit']");
-
-    const name =
-        document.getElementById("appName").value.trim();
-
-    const email =
-        document.getElementById("appEmail").value.trim();
-
-    const phone =
-        document.getElementById("appPhone").value.trim();
-
-    const locationInput =
-        document.getElementById("appLocation");
-
-    const location =
-        locationInput.value.trim();
-
-    const cvFile =
-        document.getElementById("appCV").files[0];
-
-
-    if(
-        !name ||
-        !email ||
-        !phone ||
-        !location ||
-        !cvFile
-    ){
-
-        status.innerText =
-            "Please fill in all fields and upload your CV.";
-
-        return;
-    }
-
-
-    if(cvFile.size > 5 * 1024 * 1024){
-
-        status.innerText =
-            "CV must be less than 5MB.";
-
-        return;
-    }
-
-
-    const allowedTypes = [
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    ];
-
-
-    if(!allowedTypes.includes(cvFile.type)){
-
-        status.innerText =
-            "Please upload a PDF, DOC or DOCX CV.";
-
-        return;
-    }
-
-
-    button.disabled = true;
-    button.innerText = "Submitting...";
-    status.innerText = "Uploading your CV...";
-
-
-    (async function(){
-
-        try{
-
-            const safeFileName =
-                cvFile.name.replace(
-                    /[^a-zA-Z0-9._-]/g,
-                    "_"
-                );
-
-
-            const filePath =
-                Date.now() +
-                "_" +
-                Math.random()
-                .toString(36)
-                .substring(2,8) +
-                "_" +
-                safeFileName;
-
-
-            const uploadResult =
-                await supabaseClient
-                .storage
-                .from("cvs")
-                .upload(filePath, cvFile);
-
-
-            if(uploadResult.error){
-
-                throw new Error(
-                    "CV upload failed: " +
-                    uploadResult.error.message
-                );
-
-            }
-
-
-            status.innerText =
-                "Saving application...";
-
-
-            const applicationResult =
-                await supabaseClient
-                .from("Cvs")
-                .insert([{
-
-                    "Name": name,
-
-                    "Email": email,
-
-                    "Phone": phone,
-
-                    "Location": location,
-
-                    "Cv_name": cvFile.name,
-
-                    "Job title": selectedJobTitle,
-
-                    "CV path": filePath
-
-                }]);
-
-
-            if(applicationResult.error){
-
-                throw new Error(
-                    "Application could not be saved: " +
-                    applicationResult.error.message
-                );
-
-            }
-
-
-            status.innerHTML =
-                "<strong>Application Submitted!</strong><br>" +
-                "Your application has been received successfully.";
-
-
-            form.reset();
-
-
-            setTimeout(function(){
-
-                closeApplicationModal();
-
-            },3000);
-
-
-        }catch(error){
-
-            console.error(error);
-
-            status.innerText =
-                error.message;
-
-        }finally{
-
-            button.disabled = false;
-
-            button.innerText =
-                "Submit Application";
-
-        }
-
-    })();
-
-}
-
-/* =========================
-   POST JOB
-========================= */
-
-function openPostJobModal(){
-
-    document.getElementById(
-        "postJobModal"
-    ).style.display = "block";
-
-}
-
-
-function closePostJobModal(){
-
-    document.getElementById(
-        "postJobModal"
-    ).style.display = "none";
-
-}
-
-
-function postJob(event){
-
-    event.preventDefault();
-
-    const status =
-        document.getElementById("postJobStatus");
-
-
-    const newJob = {
-
-        title:
-            document.getElementById("jobTitle")
-            .value.trim(),
-
-        company:
-            document.getElementById("jobCompany")
-            .value.trim(),
-
-        location:
-            document.getElementById("jobLocation")
-            .value.trim(),
-
-        type:
-            document.getElementById("jobType")
-            .value,
-
-        salary:
-            Number(
-                document.getElementById("jobSalary")
-                .value
-            ),
-
-        description:
-            document.getElementById("jobDescription")
-            .value.trim()
-
-    };
-
-
-    if(
-        !newJob.title ||
-        !newJob.company ||
-        !newJob.location ||
-        !newJob.type ||
-        !newJob.salary
-    ){
-
-        status.innerText =
-            "Please fill in all required fields.";
-
-        return;
-    }
-
-
-    jobs.unshift(newJob);
-
-    displayJobs(jobs);
-
-
-    document.getElementById(
-        "postJobForm"
-    ).reset();
-
-
-    status.innerText =
-        "Job posted successfully!";
-
-
-    setTimeout(function(){
-
-        closePostJobModal();
-
-        status.innerText = "";
-
-    },1500);
-
-}
-
-
-/* =========================
-   CLOSE MODALS
-========================= */
-
-window.onclick = function(event){
-
-    const applicationModal =
-        document.getElementById(
-            "applicationModal"
-        );
-
-    const postJobModal =
-        document.getElementById(
-            "postJobModal"
-        );
-
-
-    if(event.target === applicationModal){
-
-        closeApplicationModal();
-
-    }
-
-
-    if(event.target === postJobModal){
-
-        closePostJobModal();
-
-    }
-
-};
-
-
-/* =========================
-   SHOW JOBS
-========================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-        displayJobs(jobs);
-
-    }
-);
-
-</script>
-
-</body>
-
-</html>
