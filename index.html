@@ -436,3 +436,88 @@ btn.innerText="Publish Job";
 };
 
 } 
+/* =====================================================
+   PART 2 STARTS HERE
+===================================================== */
+
+async function applyJob(job){
+    const name=document.getElementById("appName").value.trim();
+    const email=document.getElementById("appEmail").value.trim();
+    const phone=document.getElementById("appPhone").value.trim();
+    const location=document.getElementById("appLocation").value.trim();
+    const file=document.getElementById("cvFile").files[0];
+
+    if(!name||!email||!phone||!location||!file){
+        alert("Please fill all fields and upload your CV.");
+        return;
+    }
+
+    try{
+        const fileName=Date.now()+"_"+file.name.replace(/\s+/g,"_");
+
+        const upload=await db.storage
+            .from(CV_BUCKET)
+            .upload(fileName,file,{
+                cacheControl:"3600",
+                upsert:false
+            });
+
+        if(upload.error){
+            throw new Error("CV upload failed: "+upload.error.message);
+        }
+
+        const saved=await db.from("applications").insert([{
+            name:name,
+            email:email,
+            phone:phone,
+            location:location,
+            job_title:job.title,
+            cv_name:file.name,
+            cv_path:fileName
+        }]);
+
+        if(saved.error){
+            await db.storage.from(CV_BUCKET).remove([fileName]);
+            throw new Error("Application save failed: "+saved.error.message);
+        }
+
+        alert("Application submitted successfully!");
+        document.getElementById("applyModal").style.display="none";
+
+        document.getElementById("appName").value="";
+        document.getElementById("appEmail").value="";
+        document.getElementById("appPhone").value="";
+        document.getElementById("appLocation").value="";
+        document.getElementById("cvFile").value="";
+
+    }catch(error){
+        alert(error.message);
+    }
+}
+
+
+/* =====================================================
+   START APP
+===================================================== */
+
+loadJobs();
+
+
+/* =====================================================
+   PWA / APP INSTALL SUPPORT
+===================================================== */
+
+if("serviceWorker" in navigator){
+    window.addEventListener("load",()=>{
+        navigator.serviceWorker
+            .register("sw.js")
+            .catch(error=>{
+                console.log("Service worker:",error);
+            });
+    });
+}
+
+</script>
+
+</body>
+</html>
