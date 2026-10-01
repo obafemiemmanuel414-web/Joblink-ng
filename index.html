@@ -366,3 +366,484 @@ footer{
 <footer>
     <p>© 2026 JobLink NG. All rights reserved.</p>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+/* =====================================================
+   SUPABASE CONNECTION
+===================================================== */
+
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+
+const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let allJobs = [];
+let selectedJobId = null;
+
+
+/* =====================================================
+   LOAD JOBS
+===================================================== */
+
+async function loadJobs(){
+
+    const jobsContainer = document.getElementById("jobs");
+
+    jobsContainer.innerHTML = `
+        <div class="empty">
+            Loading jobs...
+        </div>
+    `;
+
+    try{
+
+        const { data, error } = await db
+            .from("Jobs")
+            .select("*")
+            .order("id", { ascending:false });
+
+        if(error){
+            console.error(error);
+
+            jobsContainer.innerHTML = `
+                <div class="empty">
+                    Unable to load jobs.
+                    <br><br>
+                    Please try again.
+                </div>
+            `;
+
+            return;
+        }
+
+        allJobs = data || [];
+
+        displayJobs(allJobs);
+
+    }catch(error){
+
+        console.error(error);
+
+        jobsContainer.innerHTML = `
+            <div class="empty">
+                Something went wrong while loading jobs.
+            </div>
+        `;
+    }
+}
+
+
+/* =====================================================
+   DISPLAY JOBS
+===================================================== */
+
+function displayJobs(jobs){
+
+    const jobsContainer = document.getElementById("jobs");
+
+    if(!jobs || jobs.length === 0){
+
+        jobsContainer.innerHTML = `
+            <div class="empty">
+                No jobs available at the moment.
+            </div>
+        `;
+
+        return;
+    }
+
+    jobsContainer.innerHTML = "";
+
+    jobs.forEach(job => {
+
+        const title =
+            job.title ||
+            job.Title ||
+            job.job_title ||
+            job.Job ||
+            "Job Opportunity";
+
+        const company =
+            job.company ||
+            job.Company ||
+            job.company_name ||
+            "Company not specified";
+
+        const location =
+            job.location ||
+            job.Location ||
+            "Location not specified";
+
+        const description =
+            job.description ||
+            job.Description ||
+            job.details ||
+            "No job description provided.";
+
+        const card = document.createElement("div");
+
+        card.className = "job-card";
+
+        card.innerHTML = `
+            <h3>${escapeHTML(title)}</h3>
+
+            <p>
+                <strong>Company:</strong>
+                ${escapeHTML(company)}
+            </p>
+
+            <p>
+                <strong>Location:</strong>
+                ${escapeHTML(location)}
+            </p>
+
+            <p>
+                ${escapeHTML(description)}
+            </p>
+
+            <button onclick="openApplication('${job.id}')">
+                Apply Now
+            </button>
+        `;
+
+        jobsContainer.appendChild(card);
+    });
+}
+
+
+/* =====================================================
+   SEARCH JOBS
+===================================================== */
+
+function searchJobs(){
+
+    const search =
+        document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+    if(!search){
+
+        displayJobs(allJobs);
+
+        return;
+    }
+
+    const filtered = allJobs.filter(job => {
+
+        const text = Object.values(job)
+            .join(" ")
+            .toLowerCase();
+
+        return text.includes(search);
+    });
+
+    displayJobs(filtered);
+}
+
+
+/* =====================================================
+   ENTER KEY SEARCH
+===================================================== */
+
+document
+.getElementById("searchInput")
+.addEventListener("keydown", function(event){
+
+    if(event.key === "Enter"){
+        searchJobs();
+    }
+
+});
+
+
+/* =====================================================
+   OPEN APPLICATION
+===================================================== */
+
+function openApplication(jobId){
+
+    selectedJobId = jobId;
+
+    const job = allJobs.find(
+        item => String(item.id) === String(jobId)
+    );
+
+    if(!job){
+        showMessage(
+            "Job could not be found.",
+            "error"
+        );
+
+        return;
+    }
+
+    const title =
+        job.title ||
+        job.Title ||
+        job.job_title ||
+        job.Job ||
+        "Job Opportunity";
+
+    document.getElementById("selectedJob").innerHTML =
+        `<strong>Applying for:</strong> ${escapeHTML(title)}`;
+
+    document.getElementById("applicationModal").style.display = "block";
+}
+
+
+/* =====================================================
+   CLOSE APPLICATION
+===================================================== */
+
+function closeApplication(){
+
+    document.getElementById("applicationModal").style.display = "none";
+
+    document.getElementById("applicationForm").reset();
+
+    selectedJobId = null;
+}
+
+
+/* =====================================================
+   SUBMIT APPLICATION
+===================================================== */
+
+document
+.getElementById("applicationForm")
+.addEventListener("submit", async function(event){
+
+    event.preventDefault();
+
+    if(!selectedJobId){
+
+        showMessage(
+            "Please select a job first.",
+            "error"
+        );
+
+        return;
+    }
+
+    const name =
+        document.getElementById("applicantName").value.trim();
+
+    const email =
+        document.getElementById("applicantEmail").value.trim();
+
+    const phone =
+        document.getElementById("applicantPhone").value.trim();
+
+    const cv =
+        document.getElementById("cvFile").files[0];
+
+    if(!name || !email || !phone || !cv){
+
+        showMessage(
+            "Please complete all application fields.",
+            "error"
+        );
+
+        return;
+    }
+
+    const submitButton =
+        document.querySelector(
+            "#applicationForm button[type='submit']"
+        );
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+
+    try{
+
+        /*
+         * Upload CV
+         */
+
+        const fileName =
+            Date.now() +
+            "_" +
+            cv.name.replace(/\s+/g, "_");
+
+        const filePath =
+            "applications/" + fileName;
+
+
+        const { error: uploadError } =
+            await db.storage
+            .from("CV")
+            .upload(
+                filePath,
+                cv,
+                {
+                    upsert:false
+                }
+            );
+
+
+        if(uploadError){
+
+            console.error(uploadError);
+
+            showMessage(
+                "CV upload failed. Please try again.",
+                "error"
+            );
+
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit Application";
+
+            return;
+        }
+
+
+        /*
+         * Save application
+         */
+
+        const applicationData = {
+
+            Name: name,
+
+            Email: email,
+
+            Phone: phone,
+
+            cv_path: filePath,
+
+            job_id: selectedJobId
+
+        };
+
+
+        const { error: insertError } =
+            await db
+            .from("Applications")
+            .insert([applicationData]);
+
+
+        if(insertError){
+
+            console.error(insertError);
+
+            showMessage(
+                "Your CV uploaded, but the application could not be saved.",
+                "error"
+            );
+
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit Application";
+
+            return;
+        }
+
+
+        /*
+         * Success
+         */
+
+        closeApplication();
+
+        showMessage(
+            "Application submitted successfully! 🎉",
+            "success"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Something went wrong. Please try again.",
+            "error"
+        );
+
+    }
+
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit Application";
+
+});
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+function showMessage(message,type){
+
+    const box =
+        document.getElementById("message");
+
+    box.textContent = message;
+
+    box.className = "";
+
+    box.classList.add(type);
+
+    box.style.display = "block";
+
+    setTimeout(() => {
+
+        box.style.display = "none";
+
+    },5000);
+}
+
+
+/* =====================================================
+   HTML SECURITY
+===================================================== */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+/* =====================================================
+   CLOSE MODAL WHEN CLICKING OUTSIDE
+===================================================== */
+
+window.addEventListener("click", function(event){
+
+    const modal =
+        document.getElementById("applicationModal");
+
+    if(event.target === modal){
+
+        closeApplication();
+
+    }
+
+});
+
+
+/* =====================================================
+   START APP
+===================================================== */
+
+loadJobs();
+
+</script>
+
+</body>
+</html>
