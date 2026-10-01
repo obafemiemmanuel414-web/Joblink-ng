@@ -930,23 +930,25 @@ function submitApplication(event){
 
 
             const applicationResult =
-                await supabaseClient
-                .from("Cvs")
-                .insert([{
+    await supabaseClient
+    .from("Cvs")
+    .insert([{
 
-                    "Name": name,
+        "Name": name,
 
-                    "Email": email,
+        "Email": email,
 
-                    "Phone": phone,
+        "Phone": phone,
 
-                    "Cv_name": cvFile.name,
+        "Location": location,
 
-                    "Job title": selectedJobTitle,
+        "Cv_name": cvFile.name,
 
-                    "CV path": filePath
+        "Job title": selectedJobTitle,
 
-                }]);
+        "CV path": filePath
+
+    }]);
 
 
             if(applicationResult.error){
