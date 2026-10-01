@@ -6,5 +6,11 @@
   "background_color": "#ffffff",
   "theme_color": "#075e54",
   "description": "Find jobs and opportunities in Nigeria.",
-  "icons": []
+  "icons": [
+  {
+    "src": "icon.png",
+    "sizes": "1536x1536",
+    "type": "image/png"
+  }
+  ]
 }
