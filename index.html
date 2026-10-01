@@ -1164,4 +1164,579 @@ function postJob(){
                 );
 
 
-                if(result.err
+                if(result.error){
+
+    throw result.error;
+
+}
+
+
+modal.innerHTML = `
+
+    <div class="modal-box success">
+
+        <h2>
+            Job Published!
+        </h2>
+
+        <br>
+
+        <p>
+            Your job has been added successfully.
+        </p>
+
+        <br>
+
+        <button id="closeSuccess">
+            Done
+        </button>
+
+    </div>
+
+`;
+
+
+document.getElementById(
+    "closeSuccess"
+).onclick = function(){
+
+    modal.remove();
+
+    loadJobs();
+
+};
+
+
+}catch(error){
+
+    console.error(
+        "Publish job error:",
+        error
+    );
+
+
+    alert(
+        "Could not publish job: " +
+        error.message
+    );
+
+
+    button.disabled =
+        false;
+
+
+    button.innerText =
+        "Publish Job";
+
+}
+
+};
+
+}
+
+
+/* =====================================================
+   VIEW / APPLY FOR JOB
+===================================================== */
+
+function applyJob(jobId){
+
+    const job =
+        allJobs.find(function(item){
+
+            return String(item.id) ===
+                   String(jobId);
+
+        });
+
+
+    if(!job){
+
+        alert(
+            "Job information could not be found."
+        );
+
+        return;
+
+    }
+
+
+    const modal =
+        document.createElement("div");
+
+
+    modal.className =
+        "modal";
+
+
+    modal.innerHTML = `
+
+        <div class="modal-box">
+
+            <h2>
+                ${safe(job.title)}
+            </h2>
+
+            <br>
+
+            <p class="detail">
+                <strong>Company:</strong>
+                ${safe(job.company)}
+            </p>
+
+            <p class="detail">
+                <strong>Location:</strong>
+                ${safe(job.location)}
+            </p>
+
+            <p class="detail">
+                <strong>Job Type:</strong>
+                ${safe(job.type)}
+            </p>
+
+            <p class="detail">
+                <strong>Salary:</strong>
+                ₦${Number(
+                    job.salary || 0
+                ).toLocaleString()}
+            </p>
+
+            <br>
+
+            <p>
+                ${safe(job.description)}
+            </p>
+
+            <br>
+
+            <hr>
+
+            <br>
+
+            <h3>
+                Apply for this Job
+            </h3>
+
+            <br>
+
+            <label>
+                Full Name
+            </label>
+
+            <input
+                id="applicantName"
+                placeholder="Your full name"
+            >
+
+            <label>
+                Email
+            </label>
+
+            <input
+                id="applicantEmail"
+                type="email"
+                placeholder="Your email address"
+            >
+
+            <label>
+                Phone Number
+            </label>
+
+            <input
+                id="applicantPhone"
+                type="tel"
+                placeholder="Your phone number"
+            >
+
+            <label>
+                Cover Message
+            </label>
+
+            <textarea
+                id="applicantMessage"
+                placeholder="Tell the employer why you are interested..."
+            ></textarea>
+
+            <label>
+                CV
+            </label>
+
+            <input
+                id="applicantCV"
+                type="file"
+                accept=".pdf,.doc,.docx"
+            >
+
+            <p class="small-text">
+                PDF, DOC or DOCX
+            </p>
+
+            <br>
+
+            <button
+                id="submitApplication"
+            >
+                Submit Application
+            </button>
+
+            <button
+                id="cancelApplication"
+                class="cancel"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        modal
+    );
+
+
+    document.getElementById(
+        "cancelApplication"
+    ).onclick = function(){
+
+        modal.remove();
+
+    };
+
+
+    document.getElementById(
+        "submitApplication"
+    ).onclick = async function(){
+
+        const name =
+            document
+                .getElementById(
+                    "applicantName"
+                )
+                .value
+                .trim();
+
+
+        const email =
+            document
+                .getElementById(
+                    "applicantEmail"
+                )
+                .value
+                .trim();
+
+
+        const phone =
+            document
+                .getElementById(
+                    "applicantPhone"
+                )
+                .value
+                .trim();
+
+
+        const message =
+            document
+                .getElementById(
+                    "applicantMessage"
+                )
+                .value
+                .trim();
+
+
+        const cvInput =
+            document.getElementById(
+                "applicantCV"
+            );
+
+
+        const cvFile =
+            cvInput.files[0];
+
+
+        if(
+            !name ||
+            !email ||
+            !phone ||
+            !message
+        ){
+
+            alert(
+                "Please fill in all required fields."
+            );
+
+            return;
+
+        }
+
+
+        if(!cvFile){
+
+            alert(
+                "Please select your CV."
+            );
+
+            return;
+
+        }
+
+
+        const button =
+            document.getElementById(
+                "submitApplication"
+            );
+
+
+        button.disabled =
+            true;
+
+
+        button.innerText =
+            "Submitting...";
+
+
+        try{
+
+            /*
+             * CV UPLOAD
+             */
+
+            const bucketName =
+                "cv";
+
+
+            const extension =
+                cvFile.name
+                    .split(".")
+                    .pop()
+                    .toLowerCase();
+
+
+            const safeFileName =
+                name.replace(
+                    /[^a-zA-Z0-9]/g,
+                    "_"
+                );
+
+
+            const fileName =
+                Date.now() +
+                "_" +
+                safeFileName +
+                "." +
+                extension;
+
+
+            const uploadResult =
+                await db
+                    .storage
+                    .from(bucketName)
+                    .upload(
+                        fileName,
+                        cvFile,
+                        {
+                            upsert:false
+                        }
+                    );
+
+
+            console.log(
+                "CV upload result:",
+                uploadResult
+            );
+
+
+            if(uploadResult.error){
+
+                throw uploadResult.error;
+
+            }
+
+
+            const cvPath =
+                uploadResult.data.path;
+
+
+            /*
+             * SAVE APPLICATION
+             */
+
+            const applicationResult =
+                await db
+                    .from("application")
+                    .insert([
+                        {
+                            job_id:job.id,
+                            job_title:job.title,
+                            name:name,
+                            Email:email,
+                            Phone:phone,
+                            message:message,
+                            cv_path:cvPath
+                        }
+                    ]);
+
+
+            console.log(
+                "Application result:",
+                applicationResult
+            );
+
+
+            if(applicationResult.error){
+
+                throw applicationResult.error;
+
+            }
+
+
+            modal.innerHTML = `
+
+                <div class="modal-box success">
+
+                    <h2>
+                        Application Submitted!
+                    </h2>
+
+                    <br>
+
+                    <p>
+                        Your application for
+                        <strong>
+                            ${safe(job.title)}
+                        </strong>
+                        has been submitted successfully.
+                    </p>
+
+                    <br>
+
+                    <p>
+                        The employer can now review
+                        your application.
+                    </p>
+
+                    <br>
+
+                    <button
+                        id="closeApplicationSuccess"
+                    >
+                        Done
+                    </button>
+
+                </div>
+
+            `;
+
+
+            document.getElementById(
+                "closeApplicationSuccess"
+            ).onclick = function(){
+
+                modal.remove();
+
+            };
+
+
+        }catch(error){
+
+            console.error(
+                "Application error:",
+                error
+            );
+
+
+            alert(
+                "Application could not be submitted: " +
+                error.message
+            );
+
+
+            button.disabled =
+                false;
+
+
+            button.innerText =
+                "Submit Application";
+
+        }
+
+    };
+
+}
+
+
+/* =====================================================
+   ENTER KEY SEARCH
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key === "Enter" &&
+            (
+                document.activeElement.id ===
+                "keyword" ||
+
+                document.activeElement.id ===
+                "location"
+            )
+        ){
+
+            searchJobs();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+loadJobs();
+
+
+/* =====================================================
+   PWA SERVICE WORKER
+===================================================== */
+
+if(
+    "serviceWorker" in navigator
+){
+
+    window.addEventListener(
+        "load",
+        function(){
+
+            navigator.serviceWorker
+                .register("sw.js")
+                .then(function(){
+
+                    console.log(
+                        "Service worker registered."
+                    );
+
+                })
+                .catch(function(error){
+
+                    console.log(
+                        "Service worker registration failed:",
+                        error
+                    );
+
+                });
+
+        }
+    );
+
+}
+
+</script>
+
+</body>
+
+</html>
