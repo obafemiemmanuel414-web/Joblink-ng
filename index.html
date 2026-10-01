@@ -1053,5 +1053,445 @@ function postJob(){
 
     };
 
+/* =====================================================
+   APPLY FOR JOB
+===================================================== */
+
+function applyJob(jobId){
+
+    const job =
+        allJobs.find(function(item){
+
+            return String(item.id) ===
+                   String(jobId);
+
+        });
+
+
+    if(!job){
+
+        alert(
+            "Job information could not be found."
+        );
+
+        return;
+
+    }
+
+
+    const modal =
+        document.createElement("div");
+
+    modal.className =
+        "modal";
+
+
+    modal.innerHTML = `
+
+        <div class="modal-box">
+
+            <h2>
+                Apply for Job
+            </h2>
+
+            <br>
+
+            <p>
+                <strong>Job:</strong>
+                ${safe(job.title)}
+            </p>
+
+            <p>
+                <strong>Company:</strong>
+                ${safe(job.company)}
+            </p>
+
+            <br>
+
+            <input
+                id="applicantName"
+                type="text"
+                placeholder="Full name"
+            >
+
+            <input
+                id="applicantEmail"
+                type="email"
+                placeholder="Email address"
+            >
+
+            <input
+                id="applicantPhone"
+                type="tel"
+                placeholder="Phone number"
+            >
+
+            <input
+                id="applicantLocation"
+                type="text"
+                placeholder="Your location"
+            >
+
+            <label>
+                Upload CV
+            </label>
+
+            <input
+                id="applicantCV"
+                type="file"
+                accept=".pdf,.doc,.docx"
+            >
+
+            <p class="small-text">
+                Accepted formats: PDF, DOC, DOCX
+            </p>
+
+            <br>
+
+            <button
+                id="submitApplication"
+            >
+                Submit Application
+            </button>
+
+            <button
+                id="cancelApplication"
+                class="cancel"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(modal);
+
+
+    document.getElementById(
+        "cancelApplication"
+    ).onclick = function(){
+
+        modal.remove();
+
+    };
+
+
+    document.getElementById(
+        "submitApplication"
+    ).onclick = async function(){
+
+        const name =
+            document
+                .getElementById("applicantName")
+                .value
+                .trim();
+
+
+        const email =
+            document
+                .getElementById("applicantEmail")
+                .value
+                .trim();
+
+
+        const phone =
+            document
+                .getElementById("applicantPhone")
+                .value
+                .trim();
+
+
+        const location =
+            document
+                .getElementById("applicantLocation")
+                .value
+                .trim();
+
+
+        const cvInput =
+            document.getElementById(
+                "applicantCV"
+            );
+
+
+        const cv =
+            cvInput.files[0];
+
+
+        if(
+            !name ||
+            !email ||
+            !phone ||
+            !location ||
+            !cv
+        ){
+
+            alert(
+                "Please fill in all fields and upload your CV."
+            );
+
+            return;
+
+        }
+
+
+        const button =
+            document.getElementById(
+                "submitApplication"
+            );
+
+
+        button.disabled =
+            true;
+
+
+        button.innerText =
+            "Submitting...";
+
+
+        try{
+
+
+            /* =================================================
+               CHECK FILE TYPE
+            ================================================= */
+
+            const allowedTypes = [
+
+                "application/pdf",
+
+                "application/msword",
+
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+            ];
+
+
+            if(
+                !allowedTypes.includes(
+                    cv.type
+                )
+            ){
+
+                throw new Error(
+                    "Please upload a PDF, DOC or DOCX CV."
+                );
+
+            }
+
+
+            /* =================================================
+               CREATE UNIQUE FILE NAME
+            ================================================= */
+
+            const originalName =
+                cv.name
+                    .replace(
+                        /[^a-zA-Z0-9._-]/g,
+                        "_"
+                    );
+
+
+            const uniqueName =
+                Date.now() +
+                "_" +
+                Math.random()
+                    .toString(36)
+                    .substring(2,10) +
+                "_" +
+                originalName;
+
+
+            const filePath =
+                "applications/" +
+                uniqueName;
+
+
+            /* =================================================
+               UPLOAD CV
+            ================================================= */
+
+            console.log(
+                "Uploading CV..."
+            );
+
+
+            const uploadResult =
+                await db
+                    .storage
+                    .from("cvs")
+                    .upload(
+                        filePath,
+                        cv,
+                        {
+                            cacheControl:"3600",
+                            upsert:false
+                        }
+                    );
+
+
+            console.log(
+                "CV upload result:",
+                uploadResult
+            );
+
+
+            if(
+                uploadResult.error
+            ){
+
+                throw uploadResult.error;
+
+            }
+
+
+            /* =================================================
+               SAVE APPLICATION
+               TABLE: public."Cvs"
+            ================================================= */
+
+            console.log(
+                "Saving application..."
+            );
+
+
+            const applicationResult =
+                await db
+                    .from("Cvs")
+                    .insert([
+                        {
+                            "Name":name,
+                            "Email":email,
+                            "Phone":phone,
+                            "Location":location,
+                            "Cv_name":cv.name,
+                            "Job title":job.title,
+                            "CV path":filePath
+                        }
+                    ]);
+
+
+            console.log(
+                "Application result:",
+                applicationResult
+            );
+
+
+            if(
+                applicationResult.error
+            ){
+
+                /* Remove CV if database
+                   saving fails. */
+
+                await db
+                    .storage
+                    .from("cvs")
+                    .remove([
+                        filePath
+                    ]);
+
+
+                throw applicationResult.error;
+
+            }
+
+
+            /* =================================================
+               SUCCESS
+            ================================================= */
+
+            modal.innerHTML = `
+
+                <div class="modal-box success">
+
+                    <h2>
+                        Application Submitted!
+                    </h2>
+
+                    <br>
+
+                    <p>
+                        Your application for
+                        <strong>
+                            ${safe(job.title)}
+                        </strong>
+                        has been submitted successfully.
+                    </p>
+
+                    <br>
+
+                    <p>
+                        Your CV has also been uploaded successfully.
+                    </p>
+
+                    <br>
+
+                    <button
+                        id="closeApplicationSuccess"
+                    >
+                        Done
+                    </button>
+
+                </div>
+
+            `;
+
+
+            document.getElementById(
+                "closeApplicationSuccess"
+            ).onclick = function(){
+
+                modal.remove();
+
+            };
+
+
+        }catch(error){
+
+            console.error(
+                "Application error:",
+                error
+            );
+
+
+            alert(
+                "Application could not be submitted:\n\n" +
+                error.message
+            );
+
+
+            button.disabled =
+                false;
+
+
+            button.innerText =
+                "Submit Application";
+
+        }
+
+    };
+
 }
-    
+
+
+/* =====================================================
+   START WEBSITE
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        loadJobs();
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
